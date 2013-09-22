@@ -113,9 +113,37 @@ QSqlQuery* Queries::getMarketPriceQuery()
 {
   if (!marketPriceQuery) {
     marketPriceQuery = new QSqlQuery(QSqlDatabase::database("market"));
-    marketPriceQuery->prepare("SELECT sellPrice, buyPrice, updateTime "
+    marketPriceQuery->prepare("SELECT sellPrice, buyPrice, averagePrice, updateTime "
                               "FROM prices "
                               "WHERE typeId = :id");
   }
   return marketPriceQuery;
+}
+
+QSqlQuery* updateMarketPriceQuery = 0;
+QSqlQuery* Queries::getUpdateMarketPriceQuery()
+{
+  if (!updateMarketPriceQuery) {
+    updateMarketPriceQuery = new QSqlQuery(QSqlDatabase::database("market"));
+    updateMarketPriceQuery->prepare("UPDATE prices "
+                                    "SET sellPrice = :sellPrice, "
+                                    "    buyPrice = :buyPrice, "
+                                    "    averagePrice = :averagePrice, "
+                                    "    updateTime = :updateTime "
+                                    "WHERE typeId = :id");
+  }
+  return updateMarketPriceQuery;
+}
+
+QSqlQuery* insertMarketPriceQuery = 0;
+QSqlQuery* Queries::getInsertMarketPriceQuery()
+{
+  if (!insertMarketPriceQuery) {
+    insertMarketPriceQuery = new QSqlQuery(QSqlDatabase::database("market"));
+    insertMarketPriceQuery->prepare("INSERT INTO prices "
+                                    "(typeId, sellPrice, buyPrice, averagePrice, updateTime) "
+                                    "VALUES "
+                                    "(:id, :sellPrice, :buyPrice, :averagePrice, :updateTime)");
+  }
+  return insertMarketPriceQuery;
 }

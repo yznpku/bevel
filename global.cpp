@@ -91,10 +91,11 @@ bool makeSureMarketDatabaseAvailable()
   if (!tableQuery.next()) {
     QSqlQuery createTableQuery(marketDb);
     createTableQuery.exec("CREATE TABLE prices ( \n"
-                          "  typeId     INTEGER PRIMARY KEY, \n"
-                          "  sellPrice  FLOAT, \n"
-                          "  buyPrice   FLOAT, \n"
-                          "  updateTime INTEGER \n"
+                          "  typeId       INTEGER PRIMARY KEY, \n"
+                          "  sellPrice    FLOAT, \n"
+                          "  buyPrice     FLOAT, \n"
+                          "  averagePrice FLOAT, \n"
+                          "  updateTime   INTEGER \n"
                           ")");
 
   }

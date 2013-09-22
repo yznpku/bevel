@@ -16,6 +16,7 @@
 #include "character.hpp"
 #include "network.hpp"
 #include "settings.hpp"
+#include "market.hpp"
 
 MainWindow* mainWindow;
 
@@ -31,6 +32,7 @@ int main(int argc, char** argv) {
   makeSureUserDatabaseAvailable();
   makeSureMarketDatabaseAvailable();
 
+  market = new Market();
   Network::initNetwork();
   Settings::initSettings();
 

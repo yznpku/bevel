@@ -19,6 +19,8 @@ namespace Queries {
   QSqlQuery* getLastInsertRowidQuery();
 
   QSqlQuery* getMarketPriceQuery();
+  QSqlQuery* getUpdateMarketPriceQuery();
+  QSqlQuery* getInsertMarketPriceQuery();
 }
 
 #endif // QUERIES_HPP

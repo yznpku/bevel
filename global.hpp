@@ -8,9 +8,11 @@
 #include "skilltrainingunit.hpp"
 #include "main_window.hpp"
 class QMimeData;
+class Market;
 
-// global widgets
+// global objects
 extern MainWindow* mainWindow;  // top level widget
+extern Market* market;
 
 // helper functions
 QString decamelize(const QString& str); 

@@ -17,17 +17,45 @@
 #include "infobuttondelegate.hpp"
 #include "itemdetailswidget.hpp"
 #include "typevariant.hpp"
+#include "market.hpp"
 #include <QDrag>
 
 TypeTree::TypeTree(QWidget* parent)
   : QTreeWidget(parent) {
-  setColumnCount(2);
-  setHeaderItem(new QTreeWidgetItem(QStringList({tr("Name"), ""})));
-  header()->setStretchLastSection(false);
-  header()->setSectionResizeMode(0, QHeaderView::Stretch);
-  header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
-  this->setUniformRowHeights(true);
+  locale = QLocale(QLocale::English);
   setDragEnabled(true);
+}
+
+void TypeTree::setColumns(const QList<TypeTree::Column>& columns)
+{
+  this->columns = columns;
+  setColumnCount(columns.size() + 1);
+  header()->setStretchLastSection(false);
+  QStringList headers;
+  headers << tr("Name");
+  header()->setSectionResizeMode(0, QHeaderView::Stretch);
+  for (int i = 0; i < columns.size(); i++) {
+    switch (columns[i]) {
+    case InfoButtonColumn:
+    {
+      headers << "";
+      InfoButtonDelegate* delegate = new InfoButtonDelegate(getIconPixmap("38_16_208"));
+      this->setItemDelegateForColumn(i + 1, delegate);
+      connect(delegate, SIGNAL(clicked(QModelIndex)),
+              this, SLOT(infoButtonClicked(QModelIndex)));
+
+      break;
+    }
+    case PriceColumn:
+      headers << tr("Price");
+      break;
+    }
+    header()->setSectionResizeMode(i + 1, QHeaderView::ResizeToContents);
+  }
+  setHeaderItem(new QTreeWidgetItem(headers));
+  if (columns.contains(PriceColumn))
+    connect(market, SIGNAL(priceUpdated(int)),
+            this, SLOT(priceUpdated(int)));
 }
 
 void TypeTree::initWithDefaultGroups()
@@ -74,9 +102,6 @@ void TypeTree::initWithDefaultGroups()
     if (itemOfGroup.contains(groupId)) {
       QTreeWidgetItem* item = new QTreeWidgetItem(itemOfGroup[groupId],
                                                   QStringList(typeName));
-      InfoButton* infoButton = new InfoButton();
-      infoButton->init(typeId);
-      setItemWidget(item, 1, infoButton);
       typeOfItem[item] = typeId;
       itemOfType[typeId] = item;
     }
@@ -85,10 +110,6 @@ void TypeTree::initWithDefaultGroups()
 
 void TypeTree::initWithMarketGroups()
 {
-  InfoButtonDelegate* delegate = new InfoButtonDelegate(getIconPixmap("38_16_208"));
-  this->setItemDelegateForColumn(1, delegate);
-  connect(delegate, SIGNAL(clicked(QModelIndex)),
-          this, SLOT(infoButtonClicked(QModelIndex)));
   QMap<int, QTreeWidgetItem*> itemOfMarketGroup;
   QSqlQuery rootGroupQuery(QSqlDatabase::database("static"));
   rootGroupQuery.exec("SELECT marketGroupId "
@@ -137,8 +158,7 @@ void TypeTree::initWithMarketGroups()
     typesOfGroupQuery.exec();
     while (typesOfGroupQuery.next()) {
       int typeId = typesOfGroupQuery.value(0).toInt();
-      QString typeName = typesOfGroupQuery.value(1).toString();
-      QTreeWidgetItem* item = new QTreeWidgetItem(parentItem, QStringList(typeName));
+      QTreeWidgetItem* item = new QTreeWidgetItem(parentItem, getStringListForType(typeId));
       typeOfItem[item] = typeId;
       itemOfType[typeId] = item;
     }
@@ -206,4 +226,39 @@ void TypeTree::infoButtonClicked(const QModelIndex& index)
   int typeId = typeOfItem[item];
   ItemDetailsWidget* widget = new ItemDetailsWidget(typeId, mainWindow);
   widget->show();
+}
+
+void TypeTree::priceUpdated(int typeId)
+{
+
+}
+
+QStringList TypeTree::getStringListForType(int typeId)
+{
+  QStringList result;
+
+  QSqlQuery* nameQuery = Queries::getTypeNameQuery();
+  nameQuery->bindValue(":id", typeId);
+  nameQuery->exec();
+  nameQuery->next();
+  result << nameQuery->value(0).toString();
+
+  for (int i = 0; i < columns.size(); i++)
+    switch (columns[i]) {
+    case InfoButtonColumn:
+      result << "";
+      break;
+    case PriceColumn:
+    {
+      double sellPrice = market->getSellPrice(typeId);
+      QString str;
+      if (std::isnan(sellPrice))
+        str = tr("N/A");
+      else
+        str = locale.toString(sellPrice);
+      result << str;
+      break;
+    }
+    }
+  return result;
 }

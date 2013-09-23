@@ -11,7 +11,10 @@ class QTreeWidgetItem;
 class TypeTree : public QTreeWidget {
   Q_OBJECT
 public:
+  enum Column {InfoButtonColumn, PriceColumn};
+public:
   TypeTree(QWidget* parent = 0);
+  void setColumns(const QList<Column>& columns);
   void initWithDefaultGroups();
   void initWithMarketGroups();
 protected:
@@ -22,8 +25,12 @@ protected:
 private slots:
   void typeViewDetailsClicked();
   void infoButtonClicked(const QModelIndex& index);
+  void priceUpdated(int typeId);
 private:
+  QStringList getStringListForType(int typeId);
 private:
+  QLocale locale;
+  QList<Column> columns;
   QMap<int, QTreeWidgetItem*> itemOfType;
   QMap<QTreeWidgetItem*, int> typeOfItem;
 };

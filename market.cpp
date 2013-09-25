@@ -71,6 +71,8 @@ void Market::priceReplyFinished()
     insertQuery->bindValue(":updateTime", updateTime);
     insertQuery->exec();
   }
+
+  emit priceUpdated(typeId);
 }
 
 QStringList Market::parsePriceReply(const QString& xmlString)

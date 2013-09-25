@@ -11,7 +11,7 @@ class QTreeWidgetItem;
 class TypeTree : public QTreeWidget {
   Q_OBJECT
 public:
-  enum Column {InfoButtonColumn, PriceColumn};
+  enum Column {InfoButtonColumn, PriceColumn, UpdatePriceButtonColumn};
 public:
   TypeTree(QWidget* parent = 0);
   void setColumns(const QList<Column>& columns);
@@ -25,6 +25,7 @@ protected:
 private slots:
   void typeViewDetailsClicked();
   void infoButtonClicked(const QModelIndex& index);
+  void updatePriceButtonClicked(const QModelIndex& index);
   void priceUpdated(int typeId);
 private:
   QStringList getStringListForType(int typeId);

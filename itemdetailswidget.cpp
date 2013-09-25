@@ -78,7 +78,7 @@ void ItemDetailsWidget::fillTables() {
     tableOfCategory[categoryId]->setItem(tableOfCategory[categoryId]->rowCount() - 1,
                                          0, new QTableWidgetItem(decamelize(attributeName)));
     tableOfCategory[categoryId]->setItem(tableOfCategory[categoryId]->rowCount() - 1,
-                                         1, new QTableWidgetItem(QString::number(i.value())));
+                                         1, new QTableWidgetItem(QString::number(i.value(), 'f', 2)));
   }
 }
 

@@ -43,12 +43,20 @@ void TypeTree::setColumns(const QList<TypeTree::Column>& columns)
       this->setItemDelegateForColumn(i + 1, delegate);
       connect(delegate, SIGNAL(clicked(QModelIndex)),
               this, SLOT(infoButtonClicked(QModelIndex)));
-
       break;
     }
     case PriceColumn:
       headers << tr("Price");
       break;
+    case UpdatePriceButtonColumn:
+    {
+      headers << "";
+      PixmapButtonDelegate* delegate = new PixmapButtonDelegate(getIconPixmap("73_16_11"));
+      this->setItemDelegateForColumn(i + 1, delegate);
+      connect(delegate, SIGNAL(clicked(QModelIndex)),
+              this, SLOT(updatePriceButtonClicked(QModelIndex)));
+      break;
+    }
     }
     header()->setSectionResizeMode(i + 1, QHeaderView::ResizeToContents);
   }
@@ -228,9 +236,23 @@ void TypeTree::infoButtonClicked(const QModelIndex& index)
   widget->show();
 }
 
+void TypeTree::updatePriceButtonClicked(const QModelIndex& index)
+{
+  QTreeWidgetItem* item = itemFromIndex(index);
+  if (!typeOfItem.contains(item))
+    return;
+  int typeId = typeOfItem[item];
+  market->requestPrice(typeId);
+}
+
 void TypeTree::priceUpdated(int typeId)
 {
-
+  if (!itemOfType.contains(typeId))
+    return;
+  QTreeWidgetItem* item = itemOfType[typeId];
+  QStringList strList = getStringListForType(typeId);
+  for (int i = 0; i < strList.size(); i++)
+    item->setText(i, strList[i]);
 }
 
 QStringList TypeTree::getStringListForType(int typeId)
@@ -246,6 +268,7 @@ QStringList TypeTree::getStringListForType(int typeId)
   for (int i = 0; i < columns.size(); i++)
     switch (columns[i]) {
     case InfoButtonColumn:
+    case UpdatePriceButtonColumn:
       result << "";
       break;
     case PriceColumn:
@@ -255,7 +278,7 @@ QStringList TypeTree::getStringListForType(int typeId)
       if (std::isnan(sellPrice))
         str = tr("N/A");
       else
-        str = locale.toString(sellPrice);
+        str = locale.toString(sellPrice, 'f', 2);
       result << str;
       break;
     }

@@ -38,6 +38,7 @@ void ItemDetailsWidget::init() {
   ui = new Ui::ItemDetailsWidget;
   ui->setupUi(this);
   setWindowFlags(Qt::Dialog);
+  setAttribute(Qt::WA_DeleteOnClose);
   setWindowTitle(tr("Item Details - %1").arg(as.name));
   ui->typePixmapLabel->setPixmap(*getTypePixmap64(typeId));
   ui->typeNameLabel->setText(QString("<h2>%1</h2>").arg(as.name));

@@ -12,6 +12,7 @@ TypePixmapLabel::TypePixmapLabel(QWidget *parent) :
 {
   setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
   setBackgroundRole(QPalette::Base);
+  setAutoFillBackground(true);
   setFixedSize(80, 80);
   setAlignment(Qt::AlignmentFlag::AlignCenter);
   setAcceptDrops(true);

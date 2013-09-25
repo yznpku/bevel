@@ -45,9 +45,6 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="TypePixmapLabel" name="typePixmapLabel">
-       <property name="autoFillBackground">
-        <bool>true</bool>
-       </property>
        <property name="text">
         <string>Drag a type here.</string>
        </property>

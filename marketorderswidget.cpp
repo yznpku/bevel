@@ -18,8 +18,6 @@ MarketOrdersWidget::MarketOrdersWidget(QWidget *parent) :
   ui(new Ui::MarketOrdersWidget)
 {
   ui->setupUi(this);
-//  ui->typeNameLabel->setWordWrap(true);
-//  ui->typeNameLabel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   for (QListIterator<MarketOrdersTable*> i({ui->sellOrdersTable, ui->buyOrdersTable}); i.hasNext();) {
     MarketOrdersTable* table = i.next();
     table->setColumnCount(4);
@@ -42,7 +40,6 @@ MarketOrdersWidget::MarketOrdersWidget(QWidget *parent) :
   layout->addWidget(refreshOrStopButton);
   cornerWidget->setLayout(layout);
   statusLabel->setMovie(loaderMovie);
-//  qDebug() << cornerWidget->sizeHint();
 
   statusLabel->hide();
   refreshOrStopButton->hide();

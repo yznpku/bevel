@@ -1,13 +1,13 @@
-#ifndef INFOBUTTONDELEGATE_HPP
-#define INFOBUTTONDELEGATE_HPP
+#ifndef PIXMAPBUTTONDELEGATE_HPP
+#define PIXMAPBUTTONDELEGATE_HPP
 
 #include <QStyledItemDelegate>
 
-class InfoButtonDelegate : public QStyledItemDelegate
+class PixmapButtonDelegate : public QStyledItemDelegate
 {
   Q_OBJECT
 public:
-  explicit InfoButtonDelegate(const QPixmap& icon, QObject* parent = 0);
+  explicit PixmapButtonDelegate(const QPixmap& icon, QObject* parent = 0);
   QPoint closeIconPos(const QStyleOptionViewItem& option) const;
   void paint(QPainter* painter, const QStyleOptionViewItem& option,
              const QModelIndex& index) const;
@@ -22,4 +22,4 @@ private:
   QPixmap icon;
 };
 
-#endif // INFOBUTTONDELEGATE_HPP
+#endif // PIXMAPBUTTONDELEGATE_HPP

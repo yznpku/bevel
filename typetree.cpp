@@ -14,7 +14,7 @@
 #include "global.hpp"
 #include "queries.hpp"
 #include "infobutton.hpp"
-#include "infobuttondelegate.hpp"
+#include "pixmapbuttondelegate.hpp"
 #include "itemdetailswidget.hpp"
 #include "typevariant.hpp"
 #include "market.hpp"
@@ -39,7 +39,7 @@ void TypeTree::setColumns(const QList<TypeTree::Column>& columns)
     case InfoButtonColumn:
     {
       headers << "";
-      InfoButtonDelegate* delegate = new InfoButtonDelegate(getIconPixmap("38_16_208"));
+      PixmapButtonDelegate* delegate = new PixmapButtonDelegate(getIconPixmap("38_16_208"));
       this->setItemDelegateForColumn(i + 1, delegate);
       connect(delegate, SIGNAL(clicked(QModelIndex)),
               this, SLOT(infoButtonClicked(QModelIndex)));

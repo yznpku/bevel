@@ -37,8 +37,8 @@ HEADERS += global.hpp \
     settings.hpp \
     infobutton.hpp \
     typetree.hpp \
-    infobuttondelegate.hpp \
-    market.hpp
+    market.hpp \
+    pixmapbuttondelegate.hpp
 SOURCES += global.cpp \
            item_index_dock.cpp \
            main.cpp \
@@ -67,8 +67,8 @@ SOURCES += global.cpp \
     settings.cpp \
     infobutton.cpp \
     typetree.cpp \
-    infobuttondelegate.cpp \
-    market.cpp
+    market.cpp \
+    pixmapbuttondelegate.cpp
 
 FORMS += \
     itemdetailswidget.ui \

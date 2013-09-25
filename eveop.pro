@@ -38,7 +38,8 @@ HEADERS += global.hpp \
     typetree.hpp \
     market.hpp \
     pixmapbuttondelegate.hpp \
-    typepixmaplabel.hpp
+    typepixmaplabel.hpp \
+    blueprintcalculatorwidget.hpp
 SOURCES += global.cpp \
            item_index_dock.cpp \
            main.cpp \
@@ -68,7 +69,8 @@ SOURCES += global.cpp \
     typetree.cpp \
     market.cpp \
     pixmapbuttondelegate.cpp \
-    typepixmaplabel.cpp
+    typepixmaplabel.cpp \
+    blueprintcalculatorwidget.cpp
 
 FORMS += \
     itemdetailswidget.ui \
@@ -76,4 +78,5 @@ FORMS += \
     characterdetailswidget.ui \
     skilltrainingqueuelistitemwidget.ui \
     characterskilltreeitemskilllevelwidget.ui \
-    marketorderswidget.ui
+    marketorderswidget.ui \
+    blueprintcalculatorwidget.ui

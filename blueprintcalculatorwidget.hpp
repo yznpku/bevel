@@ -14,7 +14,8 @@ class BlueprintCalculatorWidget : public QWidget
 public:
   explicit BlueprintCalculatorWidget(QWidget *parent = 0);
   ~BlueprintCalculatorWidget();
-
+private slots:
+  void blueprintDropped(int blueprintId);
 private:
   Ui::BlueprintCalculatorWidget *ui;
 };

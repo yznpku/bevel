@@ -159,3 +159,15 @@ QSqlQuery* Queries::getBlueprintForProductQuery()
   }
   return blueprintForProductQuery;
 }
+
+QSqlQuery* productForBlueprintQuery = 0;
+QSqlQuery* Queries::getProductForBlueprintQuery()
+{
+  if (!productForBlueprintQuery) {
+    productForBlueprintQuery = new QSqlQuery(QSqlDatabase::database("static"));
+    productForBlueprintQuery->prepare("SELECT productTypeId "
+                                      "FROM invBlueprintTypes "
+                                      "WHERE blueprintTypeId = :id");
+  }
+  return productForBlueprintQuery;
+}

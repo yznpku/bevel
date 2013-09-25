@@ -147,3 +147,15 @@ QSqlQuery* Queries::getInsertMarketPriceQuery()
   }
   return insertMarketPriceQuery;
 }
+
+QSqlQuery* blueprintForProductQuery = 0;
+QSqlQuery* Queries::getBlueprintForProductQuery()
+{
+  if (!blueprintForProductQuery) {
+    blueprintForProductQuery = new QSqlQuery(QSqlDatabase::database("static"));
+    blueprintForProductQuery->prepare("SELECT blueprintTypeId "
+                                      "FROM invBlueprintTypes "
+                                      "WHERE productTypeId = :id");
+  }
+  return blueprintForProductQuery;
+}

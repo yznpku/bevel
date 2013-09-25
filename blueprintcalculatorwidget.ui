@@ -17,9 +17,9 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="TypePixmapLabel" name="blueprintPixmapLabel">
+      <widget class="BlueprintPixmapLabel" name="blueprintPixmapLabel">
        <property name="text">
-        <string>Drag a blueprint here.</string>
+        <string>Drag a blueprint or a product here.</string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
@@ -291,9 +291,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>TypePixmapLabel</class>
+   <class>BlueprintPixmapLabel</class>
    <extends>QLabel</extends>
-   <header>typepixmaplabel.hpp</header>
+   <header>blueprintpixmaplabel.hpp</header>
   </customwidget>
  </customwidgets>
  <resources/>

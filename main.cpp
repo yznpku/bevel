@@ -17,6 +17,7 @@
 #include "network.hpp"
 #include "settings.hpp"
 #include "market.hpp"
+#include "blueprintcalculatorwidget.hpp"
 
 MainWindow* mainWindow;
 
@@ -48,6 +49,9 @@ int main(int argc, char** argv) {
   marketDock->show();
   marketDock->setFloating(true);
   mainWindow->splitDockWidget(ci, ii, Qt::Vertical);
+
+  BlueprintCalculatorWidget* bcw = new BlueprintCalculatorWidget(mainWindow);
+  bcw->show();
 
   return app.exec();
 }

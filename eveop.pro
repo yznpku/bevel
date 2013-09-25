@@ -39,7 +39,8 @@ HEADERS += global.hpp \
     market.hpp \
     pixmapbuttondelegate.hpp \
     typepixmaplabel.hpp \
-    blueprintcalculatorwidget.hpp
+    blueprintcalculatorwidget.hpp \
+    blueprintpixmaplabel.hpp
 SOURCES += global.cpp \
            item_index_dock.cpp \
            main.cpp \
@@ -70,7 +71,8 @@ SOURCES += global.cpp \
     market.cpp \
     pixmapbuttondelegate.cpp \
     typepixmaplabel.cpp \
-    blueprintcalculatorwidget.cpp
+    blueprintcalculatorwidget.cpp \
+    blueprintpixmaplabel.cpp
 
 FORMS += \
     itemdetailswidget.ui \

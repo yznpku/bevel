@@ -1,4 +1,4 @@
-#include "marketorderstypepixmaplabel.hpp"
+#include "typepixmaplabel.hpp"
 
 #include <QDragEnterEvent>
 #include <QDragMoveEvent>
@@ -7,24 +7,28 @@
 #include "typevariant.hpp"
 #include "global.hpp"
 
-MarketOrdersTypePixmapLabel::MarketOrdersTypePixmapLabel(QWidget *parent) :
+TypePixmapLabel::TypePixmapLabel(QWidget *parent) :
   QLabel(parent)
 {
+  setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
+  setBackgroundRole(QPalette::Base);
+  setFixedSize(80, 80);
+  setAlignment(Qt::AlignmentFlag::AlignCenter);
   setAcceptDrops(true);
 }
 
-void MarketOrdersTypePixmapLabel::dragEnterEvent(QDragEnterEvent* e)
+void TypePixmapLabel::dragEnterEvent(QDragEnterEvent* e)
 {
   if (e->mimeData()->hasFormat("eveop/type-variant"))
     e->acceptProposedAction();
 }
 
-void MarketOrdersTypePixmapLabel::dragMoveEvent(QDragMoveEvent* e)
+void TypePixmapLabel::dragMoveEvent(QDragMoveEvent* e)
 {
   e->acceptProposedAction();
 }
 
-void MarketOrdersTypePixmapLabel::dropEvent(QDropEvent* e)
+void TypePixmapLabel::dropEvent(QDropEvent* e)
 {
   if (e->mimeData()->hasFormat("eveop/type-variant")) {
     int typeId = TypeVariant::fromMimeData(e->mimeData())[0].toTypeId();

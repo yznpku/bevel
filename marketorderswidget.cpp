@@ -18,10 +18,6 @@ MarketOrdersWidget::MarketOrdersWidget(QWidget *parent) :
   ui(new Ui::MarketOrdersWidget)
 {
   ui->setupUi(this);
-  ui->typePixmapLabel->setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
-  ui->typePixmapLabel->setBackgroundRole(QPalette::Base);
-  ui->typePixmapLabel->setFixedSize(70, 70);
-  ui->typePixmapLabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
 //  ui->typeNameLabel->setWordWrap(true);
 //  ui->typeNameLabel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   for (QListIterator<MarketOrdersTable*> i({ui->sellOrdersTable, ui->buyOrdersTable}); i.hasNext();) {

@@ -31,14 +31,14 @@ HEADERS += global.hpp \
     characterskilltreeitemskilllevelwidget.hpp \
     marketorderswidget.hpp \
     marketdock.hpp \
-    marketorderstypepixmaplabel.hpp \
     network.hpp \
     marketorderstable.hpp \
     settings.hpp \
     infobutton.hpp \
     typetree.hpp \
     market.hpp \
-    pixmapbuttondelegate.hpp
+    pixmapbuttondelegate.hpp \
+    typepixmaplabel.hpp
 SOURCES += global.cpp \
            item_index_dock.cpp \
            main.cpp \
@@ -61,14 +61,14 @@ SOURCES += global.cpp \
     queries.cpp \
     marketorderswidget.cpp \
     marketdock.cpp \
-    marketorderstypepixmaplabel.cpp \
     network.cpp \
     marketorderstable.cpp \
     settings.cpp \
     infobutton.cpp \
     typetree.cpp \
     market.cpp \
-    pixmapbuttondelegate.cpp
+    pixmapbuttondelegate.cpp \
+    typepixmaplabel.cpp
 
 FORMS += \
     itemdetailswidget.ui \

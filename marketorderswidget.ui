@@ -44,7 +44,7 @@
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="MarketOrdersTypePixmapLabel" name="typePixmapLabel">
+      <widget class="TypePixmapLabel" name="typePixmapLabel">
        <property name="autoFillBackground">
         <bool>true</bool>
        </property>
@@ -112,11 +112,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>MarketOrdersTypePixmapLabel</class>
-   <extends>QLabel</extends>
-   <header>marketorderstypepixmaplabel.hpp</header>
-  </customwidget>
-  <customwidget>
    <class>MarketOrdersTable</class>
    <extends>QTableWidget</extends>
    <header>marketorderstable.hpp</header>
@@ -126,6 +121,11 @@
    <extends>QWidget</extends>
    <header>infobutton.hpp</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TypePixmapLabel</class>
+   <extends>QLabel</extends>
+   <header>typepixmaplabel.hpp</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -17,6 +17,7 @@ namespace Queries {
   QSqlQuery* getStationNameQuery();
   QSqlQuery* getBlueprintForProductQuery();
   QSqlQuery* getProductForBlueprintQuery();
+  QSqlQuery* getTypePortionSizeQuery();
 
   QSqlQuery* getLastInsertRowidQuery();
 

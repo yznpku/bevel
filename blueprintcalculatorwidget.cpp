@@ -72,4 +72,11 @@ void BlueprintCalculatorWidget::blueprintDropped(int blueprintId)
   ui->productNameLabel->setText(QString("<h2>%1</h2>").arg(productName));
   ui->productPixmap->setPixmap(*getTypePixmap64(productId));
   ui->productInfoButton->init(productId);
+
+  QSqlQuery* portionSizeQuery = Queries::getTypePortionSizeQuery();
+  portionSizeQuery->bindValue(":id", productId);
+  portionSizeQuery->exec();
+  portionSizeQuery->next();
+  int portionSize = portionSizeQuery->value(0).toInt();
+  ui->productPortionSizeLabel->setText(QString("*%1").arg(QString::number(portionSize)));
 }

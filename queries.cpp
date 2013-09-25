@@ -171,3 +171,15 @@ QSqlQuery* Queries::getProductForBlueprintQuery()
   }
   return productForBlueprintQuery;
 }
+
+QSqlQuery* typePortionSizeQuery = 0;
+QSqlQuery* Queries::getTypePortionSizeQuery()
+{
+  if (!typePortionSizeQuery) {
+    typePortionSizeQuery = new QSqlQuery(QSqlDatabase::database("static"));
+    typePortionSizeQuery->prepare("SELECT portionSize "
+                                  "FROM invTypes "
+                                  "WHERE typeId = :id");
+  }
+  return typePortionSizeQuery;
+}

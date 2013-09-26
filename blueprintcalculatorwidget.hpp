@@ -23,6 +23,7 @@ private:
   void getMaterials();
   void fillTables();
   QStringList getStringListForMaterial(int materialTypeId, int quantity, bool withWaste);
+  int getMeRequiredForOptimalMaterial(int materialQuantity) const;
 private:
   int blueprintId;
   int productId;

@@ -143,11 +143,16 @@ QStringList BlueprintCalculatorWidget::getStringListForMaterial(int materialType
   result << typeNameQuery->value(0).toString();
   result << locale.toString(quantity);
   if (withWaste) {
-    result << "";
-    int currentQuantity = int(quantity * 1.1);
+    result << locale.toString(getMeRequiredForOptimalMaterial(quantity));
+    int currentQuantity = qRound(quantity * 1.1);
     result << locale.toString(currentQuantity);
   }
   result << "";
 
   return result;
+}
+
+int BlueprintCalculatorWidget::getMeRequiredForOptimalMaterial(int materialQuantity) const
+{
+  return int(0.2 * materialQuantity);
 }

@@ -186,7 +186,7 @@ void TypeTree::contextMenuEvent(QContextMenuEvent* e) {
 
 QStringList TypeTree::mimeTypes() const {
   QStringList types;
-  types << "eveop/type-variant"
+  types << "bevel/type-variant"
         << "text/plain";
   return types;
 }

@@ -14,7 +14,7 @@ SkillTrainingUnit::SkillTrainingUnit(int skillId, int level) {
 
 QList<SkillTrainingUnit> SkillTrainingUnit::fromMimeData(const QMimeData* mimeData) {
   QList<SkillTrainingUnit> stul;
-  QByteArray data = mimeData->data("eveop/skill-training-unit");
+  QByteArray data = mimeData->data("bevel/skill-training-unit");
   QDataStream stream(data);
   stream >> stul;
   return stul;

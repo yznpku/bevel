@@ -8,7 +8,6 @@
 #include <QSqlQuery>
 #include <QTableWidget>
 #include <QTabWidget>
-#include <QtDebug>
 #include <QTextEdit>
 #include <QVBoxLayout>
 

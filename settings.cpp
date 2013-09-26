@@ -14,7 +14,7 @@ QVariant getSettingsValue(const QString& key, const QVariant& defaultValue) {
 
 void Settings::initSettings()
 {
-  settings = new QSettings("futurecode", "eveop");
+  settings = new QSettings("futurecode", "bevel");
 }
 
 int Settings::getMarketOrdersTimeLimitSetting()

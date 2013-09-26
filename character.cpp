@@ -1,7 +1,6 @@
 #include "character.hpp"
 
 #include <QtSql>
-#include <QtDebug>
 #include "global.hpp"
 #include "queries.hpp"
 
@@ -90,7 +89,6 @@ bool Character::create() {
   QByteArray skillsData;
   QDataStream stream(&skillsData, QIODevice::WriteOnly);
   stream << skills;
-  qDebug("%d", skillsData.size());
   createCharacterQuery.bindValue(":skills", skillsData);
   createCharacterQuery.exec();
 

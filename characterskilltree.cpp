@@ -83,7 +83,7 @@ void CharacterSkillTree::contextMenuEvent(QContextMenuEvent *e) {
 }
 
 void CharacterSkillTree::dragEnterEvent(QDragEnterEvent* e) {
-  if (e->mimeData()->hasFormat("eveop/type-variant")) {
+  if (e->mimeData()->hasFormat("bevel/type-variant")) {
     int typeId = TypeVariant::fromMimeData(e->mimeData())[0].toTypeId();
     QSqlQuery* categoryQuery = Queries::getCategoryOfTypeQuery();
     categoryQuery->bindValue(":id", typeId);
@@ -92,7 +92,7 @@ void CharacterSkillTree::dragEnterEvent(QDragEnterEvent* e) {
     int categoryId = categoryQuery->value(0).toInt();
     if (categoryId == 16)
       e->acceptProposedAction();
-  } else if (e->mimeData()->hasFormat("eveop/skill-training-unit")) {
+  } else if (e->mimeData()->hasFormat("bevel/skill-training-unit")) {
     e->acceptProposedAction();
   }
 }
@@ -102,21 +102,21 @@ void CharacterSkillTree::dragMoveEvent(QDragMoveEvent* e) {
 }
 
 void CharacterSkillTree::dropEvent(QDropEvent* e) {
-  if (e->mimeData()->hasFormat("eveop/type-variant")) {
+  if (e->mimeData()->hasFormat("bevel/type-variant")) {
     int typeId = TypeVariant::fromMimeData(e->mimeData())[0].toTypeId();
     e->acceptProposedAction();
     if (!chr->skills.contains(typeId)) {
       chr->addSkill(typeId);
       chr->save();
     }
-  } else if (e->mimeData()->hasFormat("eveop/skill-training-unit")) {
+  } else if (e->mimeData()->hasFormat("bevel/skill-training-unit")) {
     e->acceptProposedAction();
   }
 }
 
 QStringList CharacterSkillTree::mimeTypes() const {
   QStringList types;
-  types << "eveop/type-variant"
+  types << "bevel/type-variant"
         << "text/plain";
   return types;
 }

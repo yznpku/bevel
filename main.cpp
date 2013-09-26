@@ -1,10 +1,8 @@
 #include <QApplication>
 #include <QDockWidget>
 #include <QLabel>
-#include <QtDebug>
 #include <QTextEdit>
 #include <QtSql>
-#include <QtDebug>
 #include <QVBoxLayout>
 #include <QtXmlPatterns>
 

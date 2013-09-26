@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = eveop
+TARGET = bevel
 INCLUDEPATH += .
 
 QT += sql widgets network xmlpatterns

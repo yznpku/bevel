@@ -8,7 +8,7 @@ TypeVariant::TypeVariant() {
 
 QList<TypeVariant> TypeVariant::fromMimeData(const QMimeData* mimeData) {
   QList<TypeVariant> tvl;
-  QByteArray data = mimeData->data("eveop/type-variant");
+  QByteArray data = mimeData->data("bevel/type-variant");
   QDataStream stream(data);
   stream >> tvl;
   return tvl;

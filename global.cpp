@@ -108,7 +108,7 @@ QMimeData* listOfTypeVariantToMimeData(const QList<TypeVariant>& typeVariants) {
   QByteArray typeVariantData;
   QDataStream typeVariantDataStream(&typeVariantData, QIODevice::WriteOnly);
   typeVariantDataStream << typeVariants;
-  data->setData("eveop/type-variant", typeVariantData);
+  data->setData("bevel/type-variant", typeVariantData);
 
   if (!typeVariants.isEmpty()) {
     QString str = QString::number(typeVariants[0].toTypeId());
@@ -126,7 +126,7 @@ QMimeData* listOfSkillTrainingUnitToMimeData(const QList<SkillTrainingUnit>& uni
   QByteArray unitsData;
   QDataStream stream(&unitsData, QIODevice::WriteOnly);
   stream << units;
-  data->setData("eveop/skill-training-unit", unitsData);
+  data->setData("bevel/skill-training-unit", unitsData);
 
   return data;
 }

@@ -8,7 +8,6 @@
 #include <QListWidgetItem>
 #include <QListIterator>
 #include <QSqlQuery>
-#include <QDebug>
 #include "character.hpp"
 #include "global.hpp"
 #include "skilltrainingqueuelistitemwidget.hpp"
@@ -27,9 +26,9 @@ void SkillTrainingQueueListWidget::setCharacter(Character* chr) {
 
 void SkillTrainingQueueListWidget::dragEnterEvent(QDragEnterEvent* e) {
   bool willAccept = false;
-  if (e->mimeData()->hasFormat("eveop/skill-training-unit"))
+  if (e->mimeData()->hasFormat("bevel/skill-training-unit"))
     willAccept = true;
-  if (e->mimeData()->hasFormat("eveop/type-variant")) {
+  if (e->mimeData()->hasFormat("bevel/type-variant")) {
     QList<TypeVariant> tvl = TypeVariant::fromMimeData(e->mimeData());
     QSqlQuery* categoryQuery = Queries::getCategoryOfTypeQuery();
     categoryQuery->bindValue(":id", tvl[0].toTypeId());
@@ -45,8 +44,8 @@ void SkillTrainingQueueListWidget::dragEnterEvent(QDragEnterEvent* e) {
 
 QStringList SkillTrainingQueueListWidget::mimeTypes() const {
   QStringList types;
-  types << "eveop/type-variant"
-        << "eveop/skill-training-unit";
+  types << "bevel/type-variant"
+        << "bevel/skill-training-unit";
   return types;
 }
 
@@ -64,10 +63,10 @@ QMimeData* SkillTrainingQueueListWidget::mimeData(const QList<QListWidgetItem*> 
 bool SkillTrainingQueueListWidget::dropMimeData(int index, const QMimeData* data, Qt::DropAction action) {
   Q_UNUSED(action);
   clearSelection();
-  if (data->hasFormat("eveop/type-variant")) {
+  if (data->hasFormat("bevel/type-variant")) {
     QList<TypeVariant> tvl = TypeVariant::fromMimeData(data);
     addTypes(index, tvl);
-  } else if (data->hasFormat("eveop/skill-training-unit")) {
+  } else if (data->hasFormat("bevel/skill-training-unit")) {
     QList<SkillTrainingUnit> stul = SkillTrainingUnit::fromMimeData(data);
     return addTrainingUnits(index, stul);
   }

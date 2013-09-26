@@ -5,8 +5,6 @@
 #include "network.hpp"
 #include "settings.hpp"
 #include <cmath>
-#include <QtDebug>
-#include <QSqlError>
 
 Market* market;
 

@@ -5,7 +5,6 @@
 #include <QListIterator>
 #include <QPushButton>
 #include <QTableWidget>
-#include <QtDebug>
 #include <QtXmlPatterns>
 #include <QMovie>
 #include "network.hpp"

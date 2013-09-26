@@ -3,7 +3,6 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QUrlQuery>
-#include <QDebug>
 
 QNetworkAccessManager* network;
 

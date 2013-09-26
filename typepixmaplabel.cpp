@@ -20,7 +20,7 @@ TypePixmapLabel::TypePixmapLabel(QWidget* parent)
 
 void TypePixmapLabel::dragEnterEvent(QDragEnterEvent* e)
 {
-  if (e->mimeData()->hasFormat("eveop/type-variant"))
+  if (e->mimeData()->hasFormat("bevel/type-variant"))
     e->acceptProposedAction();
 }
 
@@ -31,7 +31,7 @@ void TypePixmapLabel::dragMoveEvent(QDragMoveEvent* e)
 
 void TypePixmapLabel::dropEvent(QDropEvent* e)
 {
-  if (e->mimeData()->hasFormat("eveop/type-variant")) {
+  if (e->mimeData()->hasFormat("bevel/type-variant")) {
     int typeId = TypeVariant::fromMimeData(e->mimeData())[0].toTypeId();
     int filteredTypeId = filterTypeId(typeId);
     if (filteredTypeId == -1)

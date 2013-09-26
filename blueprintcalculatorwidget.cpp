@@ -110,6 +110,12 @@ void BlueprintCalculatorWidget::getMaterials()
   while (extraMaterialsQuery->next()) {
     int materialTypeId = extraMaterialsQuery->value(0).toInt();
     int quantity = extraMaterialsQuery->value(1).toInt();
+    QSqlQuery* categoryQuery = Queries::getCategoryOfTypeQuery();
+    categoryQuery->bindValue(":id", materialTypeId);
+    categoryQuery->exec();
+    categoryQuery->next();
+    if (categoryQuery->value(0).toInt() == 16) // Do not treat skills as materials
+      continue;
     extraMaterials[materialTypeId] = quantity;
   }
 }

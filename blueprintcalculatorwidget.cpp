@@ -119,12 +119,16 @@ void BlueprintCalculatorWidget::fillTables()
   for (QMapIterator<int, int> i(basicMaterials); i.hasNext();) {
     i.next();
     QStringList strList = getStringListForMaterial(i.key(), i.value(), true);
-    ui->basicMaterialsTable->addTopLevelItem(new QTreeWidgetItem(strList));
+    QTreeWidgetItem* item = new QTreeWidgetItem(strList);
+    item->setIcon(0, QIcon(*getTypePixmap32(i.key())));
+    ui->basicMaterialsTable->addTopLevelItem(item);
   }
   for (QMapIterator<int, int> i(extraMaterials); i.hasNext();) {
     i.next();
     QStringList strList = getStringListForMaterial(i.key(), i.value(), false);
-    ui->extraMaterialsTable->addTopLevelItem(new QTreeWidgetItem(strList));
+    QTreeWidgetItem* item = new QTreeWidgetItem(strList);
+    item->setIcon(0, QIcon(*getTypePixmap32(i.key())));
+    ui->extraMaterialsTable->addTopLevelItem(item);
   }
 }
 

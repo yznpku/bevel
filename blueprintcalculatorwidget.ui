@@ -211,6 +211,9 @@
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
              <widget class="QTreeWidget" name="basicMaterialsTable">
+              <property name="rootIsDecorated">
+               <bool>false</bool>
+              </property>
               <column>
                <property name="text">
                 <string notr="true">1</string>
@@ -247,6 +250,9 @@
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
              <widget class="QTreeWidget" name="extraMaterialsTable">
+              <property name="rootIsDecorated">
+               <bool>false</bool>
+              </property>
               <column>
                <property name="text">
                 <string notr="true">1</string>

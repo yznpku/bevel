@@ -3,6 +3,9 @@
 
 #include <QWidget>
 
+#include <QMap>
+#include <QLocale>
+
 namespace Ui {
   class BlueprintCalculatorWidget;
 }
@@ -16,6 +19,17 @@ public:
   ~BlueprintCalculatorWidget();
 private slots:
   void blueprintDropped(int blueprintId);
+private:
+  void getMaterials();
+  void fillTables();
+  QStringList getStringListForMaterial(int materialTypeId, int quantity, bool withWaste);
+private:
+  int blueprintId;
+  int productId;
+  int portionSize;
+  QMap<int, int> basicMaterials;
+  QMap<int, int> extraMaterials;
+  QLocale locale;
 private:
   Ui::BlueprintCalculatorWidget *ui;
 };

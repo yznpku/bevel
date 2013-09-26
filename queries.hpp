@@ -18,6 +18,8 @@ namespace Queries {
   QSqlQuery* getBlueprintForProductQuery();
   QSqlQuery* getProductForBlueprintQuery();
   QSqlQuery* getTypePortionSizeQuery();
+  QSqlQuery* getBasicMaterialsQuery();
+  QSqlQuery* getExtraMaterialsQuery();
 
   QSqlQuery* getLastInsertRowidQuery();
 

@@ -183,3 +183,28 @@ QSqlQuery* Queries::getTypePortionSizeQuery()
   }
   return typePortionSizeQuery;
 }
+
+QSqlQuery* basicMaterialsQuery = 0;
+QSqlQuery* Queries::getBasicMaterialsQuery()
+{
+  if (!basicMaterialsQuery) {
+    basicMaterialsQuery = new QSqlQuery(QSqlDatabase::database("static"));
+    basicMaterialsQuery->prepare("SELECT materialTypeId, quantity "
+                                 "FROM invTypeMaterials "
+                                 "WHERE typeId = :id");
+  }
+  return basicMaterialsQuery;
+}
+
+QSqlQuery* extraMaterialsQuery = 0;
+QSqlQuery* Queries::getExtraMaterialsQuery()
+{
+  if (!extraMaterialsQuery) {
+    extraMaterialsQuery = new QSqlQuery(QSqlDatabase::database("static"));
+    extraMaterialsQuery->prepare("SELECT requiredTypeId, quantity "
+                                 "FROM ramTypeRequirements "
+                                 "WHERE typeId = :id "
+                                 "  AND activityId = 1");
+  }
+  return extraMaterialsQuery;
+}

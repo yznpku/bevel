@@ -4,8 +4,9 @@
 #include <QNetworkReply>
 #include <QListIterator>
 
-
 namespace Network {
+  extern QNetworkAccessManager* marketNetwork;
+
   void initNetwork();
   QNetworkReply* getOrders(int typeId, int timeLimit, int regionLimit = -1, int systemLimit = -1);
   QNetworkReply* getPrice(int typeId, int timeLimit, int regionLimit = -1, int systemLimit = -1);

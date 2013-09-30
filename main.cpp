@@ -31,8 +31,8 @@ int main(int argc, char** argv) {
   makeSureUserDatabaseAvailable();
   makeSureMarketDatabaseAvailable();
 
-  market = new Market();
   Network::initNetwork();
+  Market::initMarket();
   Settings::initSettings();
 
   mainWindow = new MainWindow();

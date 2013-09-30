@@ -4,13 +4,13 @@
 #include <QNetworkRequest>
 #include <QUrlQuery>
 
-QNetworkAccessManager* network;
+QNetworkAccessManager* Network::marketNetwork = 0;
 
 void Network::initNetwork()
 {
-  if (!network)
-    network = new QNetworkAccessManager();
-  network->get(QNetworkRequest(QUrl("")));
+  if (!marketNetwork)
+    marketNetwork = new QNetworkAccessManager();
+  marketNetwork->get(QNetworkRequest(QUrl("")));
 }
 
 
@@ -28,7 +28,7 @@ QNetworkReply* Network::getOrders(int typeId, int timeLimit,
   QUrl url("http://www.ceve-market.org/api/quicklook");
   url.setQuery(query);
   QNetworkRequest request(url);
-  return network->get(request);
+  return marketNetwork->get(request);
 }
 
 
@@ -46,5 +46,5 @@ QNetworkReply* Network::getPrice(int typeId, int timeLimit,
   QUrl url("http://www.ceve-market.org/api/marketstat");
   url.setQuery(query);
   QNetworkRequest request(url);
-  return network->get(request);
+  return marketNetwork->get(request);
 }

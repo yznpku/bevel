@@ -3,6 +3,7 @@
 #include <QAction>
 #include <QContextMenuEvent>
 #include <QDataStream>
+#include <QDrag>
 #include <QHeaderView>
 #include <QLabel>
 #include <QListIterator>
@@ -18,7 +19,6 @@
 #include "itemdetailswidget.hpp"
 #include "typevariant.hpp"
 #include "market.hpp"
-#include <QDrag>
 
 TypeTree::TypeTree(QWidget* parent)
   : QTreeWidget(parent) {
@@ -275,7 +275,7 @@ QStringList TypeTree::getStringListForType(int typeId)
     {
       double sellPrice = market->getSellPrice(typeId);
       QString str;
-      if (std::isnan(sellPrice))
+      if (qIsNaN(sellPrice))
         str = tr("N/A");
       else
         str = locale.toString(sellPrice, 'f', 2);

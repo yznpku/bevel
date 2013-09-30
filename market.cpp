@@ -3,7 +3,6 @@
 #include <QThread>
 #include <QSetIterator>
 #include <QtXmlPatterns>
-#include <cmath>
 #include "queries.hpp"
 #include "network.hpp"
 #include "settings.hpp"
@@ -35,7 +34,7 @@ double Market::getSellPrice(int typeId)
 
   if (!marketPriceQuery->next()) {
     databaseLock.unlock();
-    return std::nan("");
+    return qQNaN();
   }
 
   double price = marketPriceQuery->value(0).toDouble();

@@ -4,6 +4,8 @@
 #include <QMapIterator>
 #include "global.hpp"
 #include "queries.hpp"
+#include "market.hpp"
+#include <QtNumeric>
 
 BlueprintCalculatorWidget::BlueprintCalculatorWidget(QWidget *parent) :
   QWidget(parent),
@@ -45,6 +47,8 @@ BlueprintCalculatorWidget::BlueprintCalculatorWidget(QWidget *parent) :
 
   connect(ui->blueprintPixmapLabel, SIGNAL(typeDropped(int)),
           this, SLOT(blueprintDropped(int)));
+  connect(market, SIGNAL(priceUpdated(int)),
+          this, SLOT(priceUpdated(int)));
 }
 
 BlueprintCalculatorWidget::~BlueprintCalculatorWidget()
@@ -87,7 +91,14 @@ void BlueprintCalculatorWidget::blueprintDropped(int blueprintId)
   this->portionSize = portionSize;
 
   getMaterials();
+  requestPrices();
   fillTables();
+}
+
+void BlueprintCalculatorWidget::priceUpdated(int typeId)
+{
+  updateBasicMaterialItem(typeId);
+  updateExtraMaterialItem(typeId);
 }
 
 void BlueprintCalculatorWidget::getMaterials()
@@ -120,22 +131,61 @@ void BlueprintCalculatorWidget::getMaterials()
   }
 }
 
-void BlueprintCalculatorWidget::fillTables()
+void BlueprintCalculatorWidget::requestPrices()
 {
   for (QMapIterator<int, int> i(basicMaterials); i.hasNext();) {
     i.next();
-    QStringList strList = getStringListForMaterial(i.key(), i.value(), true);
-    QTreeWidgetItem* item = new QTreeWidgetItem(strList);
-    item->setIcon(0, QIcon(*getTypePixmap32(i.key())));
-    ui->basicMaterialsTable->addTopLevelItem(item);
+    market->requestPrice(i.key());
   }
   for (QMapIterator<int, int> i(extraMaterials); i.hasNext();) {
     i.next();
-    QStringList strList = getStringListForMaterial(i.key(), i.value(), false);
-    QTreeWidgetItem* item = new QTreeWidgetItem(strList);
+    market->requestPrice(i.key());
+  }
+}
+
+void BlueprintCalculatorWidget::fillTables()
+{
+  ui->basicMaterialsTable->clear();
+  ui->extraMaterialsTable->clear();
+  itemOfBasicMaterial.clear();
+  itemOfExtraMaterial.clear();
+
+  for (QMapIterator<int, int> i(basicMaterials); i.hasNext();) {
+    i.next();
+    QTreeWidgetItem* item = new QTreeWidgetItem();
+    item->setIcon(0, QIcon(*getTypePixmap32(i.key())));
+    ui->basicMaterialsTable->addTopLevelItem(item);
+    itemOfBasicMaterial[i.key()] = item;
+    updateBasicMaterialItem(i.key());
+  }
+  for (QMapIterator<int, int> i(extraMaterials); i.hasNext();) {
+    i.next();
+    QTreeWidgetItem* item = new QTreeWidgetItem();
     item->setIcon(0, QIcon(*getTypePixmap32(i.key())));
     ui->extraMaterialsTable->addTopLevelItem(item);
+    itemOfExtraMaterial[i.key()] = item;
+    updateExtraMaterialItem(i.key());
   }
+}
+
+void BlueprintCalculatorWidget::updateBasicMaterialItem(int typeId)
+{
+  if (!itemOfBasicMaterial.contains(typeId))
+    return;
+  QTreeWidgetItem* item = itemOfBasicMaterial[typeId];
+  QStringList strList = getStringListForMaterial(typeId, basicMaterials[typeId], true);
+  for (int i = 0; i < strList.size(); i++)
+    item->setText(i, strList[i]);
+}
+
+void BlueprintCalculatorWidget::updateExtraMaterialItem(int typeId)
+{
+  if (!itemOfExtraMaterial.contains(typeId))
+    return;
+  QTreeWidgetItem* item = itemOfExtraMaterial[typeId];
+  QStringList strList = getStringListForMaterial(typeId, extraMaterials[typeId], false);
+  for (int i = 0; i < strList.size(); i++)
+    item->setText(i, strList[i]);
 }
 
 QStringList BlueprintCalculatorWidget::getStringListForMaterial(int materialTypeId, int quantity, bool withWaste)
@@ -148,12 +198,14 @@ QStringList BlueprintCalculatorWidget::getStringListForMaterial(int materialType
   typeNameQuery->next();
   result << typeNameQuery->value(0).toString();
   result << locale.toString(quantity);
+  int actualQuantity = quantity;
   if (withWaste) {
     result << locale.toString(getMeRequiredForOptimalMaterial(quantity));
-    int currentQuantity = qRound(quantity * 1.1);
-    result << locale.toString(currentQuantity);
+    actualQuantity = getQuantityWithWaste(quantity, 0);
+    result << locale.toString(actualQuantity);
   }
-  result << "";
+  double sellPrice = market->getSellPrice(materialTypeId) * actualQuantity;
+  result << (qIsNaN(sellPrice) ? tr("N/A") : locale.toString(sellPrice));
 
   return result;
 }
@@ -161,4 +213,14 @@ QStringList BlueprintCalculatorWidget::getStringListForMaterial(int materialType
 int BlueprintCalculatorWidget::getMeRequiredForOptimalMaterial(int materialQuantity) const
 {
   return int(0.2 * materialQuantity);
+}
+
+int BlueprintCalculatorWidget::getQuantityWithWaste(int quantity, int me) const
+{
+  double wasteFactor;
+  if (me < 0)
+    wasteFactor = 0.1 * (1 - me);
+  else
+    wasteFactor = 0.1 / (1 + me);
+  return qRound(quantity * (1 + wasteFactor));
 }

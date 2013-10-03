@@ -10,6 +10,8 @@ namespace Ui {
   class BlueprintCalculatorWidget;
 }
 
+class QTreeWidgetItem;
+
 class BlueprintCalculatorWidget : public QWidget
 {
   Q_OBJECT
@@ -19,17 +21,24 @@ public:
   ~BlueprintCalculatorWidget();
 private slots:
   void blueprintDropped(int blueprintId);
+  void priceUpdated(int typeId);
 private:
   void getMaterials();
+  void requestPrices();
   void fillTables();
+  void updateBasicMaterialItem(int typeId);
+  void updateExtraMaterialItem(int typeId);
   QStringList getStringListForMaterial(int materialTypeId, int quantity, bool withWaste);
   int getMeRequiredForOptimalMaterial(int materialQuantity) const;
+  int getQuantityWithWaste(int quantity, int me) const;
 private:
   int blueprintId;
   int productId;
   int portionSize;
   QMap<int, int> basicMaterials;
   QMap<int, int> extraMaterials;
+  QMap<int, QTreeWidgetItem*> itemOfBasicMaterial;
+  QMap<int, QTreeWidgetItem*> itemOfExtraMaterial;
   QLocale locale;
 private:
   Ui::BlueprintCalculatorWidget *ui;

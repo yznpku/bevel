@@ -90,22 +90,25 @@ void BlueprintCalculatorWidget::blueprintDropped(int blueprintId)
   this->productId = productId;
   this->portionSize = portionSize;
 
-  getMaterials();
+  basicMaterials = getBasicMaterials();
+  extraMaterials = getExtraMaterials();
   requestPrices();
   fillTables();
+  updateBasicMaterialsCost();
+  updateExtraMaterialsCost();
 }
 
 void BlueprintCalculatorWidget::priceUpdated(int typeId)
 {
   updateBasicMaterialItem(typeId);
   updateExtraMaterialItem(typeId);
+  updateBasicMaterialsCost();
+  updateExtraMaterialsCost();
 }
 
-void BlueprintCalculatorWidget::getMaterials()
+QMap<int, int> BlueprintCalculatorWidget::getBasicMaterials() const
 {
-  basicMaterials.clear();
-  extraMaterials.clear();
-
+  QMap<int, int> basicMaterials;
   QSqlQuery* basicMaterialsQuery = Queries::getBasicMaterialsQuery();
   basicMaterialsQuery->bindValue(":id", productId);
   basicMaterialsQuery->exec();
@@ -114,7 +117,12 @@ void BlueprintCalculatorWidget::getMaterials()
     int quantity = basicMaterialsQuery->value(1).toInt();
     basicMaterials[materialTypeId] = quantity;
   }
+  return basicMaterials;
+}
 
+QMap<int, int> BlueprintCalculatorWidget::getExtraMaterials() const
+{
+  QMap<int, int> extraMaterials;
   QSqlQuery* extraMaterialsQuery = Queries::getExtraMaterialsQuery();
   extraMaterialsQuery->bindValue(":id", blueprintId);
   extraMaterialsQuery->exec();
@@ -129,6 +137,45 @@ void BlueprintCalculatorWidget::getMaterials()
       continue;
     extraMaterials[materialTypeId] = quantity;
   }
+  return extraMaterials;
+}
+
+double BlueprintCalculatorWidget::getBasicMaterialsCost() const
+{
+  double sum = 0.0;
+  for (QMapIterator<int, int> i(basicMaterials); i.hasNext();) {
+    i.next();
+    double price = market->getSellPrice(i.key());
+    sum += price * getQuantityWithWaste(i.value(), 0);
+  }
+  return sum;
+}
+
+double BlueprintCalculatorWidget::getExtraMaterialsCost() const
+{
+  double sum = 0.0;
+  for (QMapIterator<int, int> i(extraMaterials); i.hasNext();) {
+    i.next();
+    double price = market->getSellPrice(i.key());
+    sum += price * i.value();
+  }
+  return sum;
+}
+
+void BlueprintCalculatorWidget::updateBasicMaterialsCost()
+{
+  double cost = getBasicMaterialsCost();
+  QString str = qIsNaN(cost) ? tr("N/A") : locale.toString(cost, 'f', 2);
+  str += " ISK";
+  ui->basicMaterialsCostLabel->setText(str);
+}
+
+void BlueprintCalculatorWidget::updateExtraMaterialsCost()
+{
+  double cost = getExtraMaterialsCost();
+  QString str = qIsNaN(cost) ? tr("N/A") : locale.toString(cost, 'f', 2);
+  str += " ISK";
+  ui->extraMaterialsCostLabel->setText(str);
 }
 
 void BlueprintCalculatorWidget::requestPrices()

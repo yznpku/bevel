@@ -23,7 +23,12 @@ private slots:
   void blueprintDropped(int blueprintId);
   void priceUpdated(int typeId);
 private:
-  void getMaterials();
+  QMap<int, int> getBasicMaterials() const;
+  QMap<int, int> getExtraMaterials() const;
+  double getBasicMaterialsCost() const;
+  double getExtraMaterialsCost() const;
+  void updateBasicMaterialsCost();
+  void updateExtraMaterialsCost();
   void requestPrices();
   void fillTables();
   void updateBasicMaterialItem(int typeId);

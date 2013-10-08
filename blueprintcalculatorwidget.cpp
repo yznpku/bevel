@@ -96,14 +96,21 @@ void BlueprintCalculatorWidget::blueprintDropped(int blueprintId)
   fillTables();
   updateBasicMaterialsCost();
   updateExtraMaterialsCost();
+  updateTotalMaterialsCost();
 }
 
 void BlueprintCalculatorWidget::priceUpdated(int typeId)
 {
-  updateBasicMaterialItem(typeId);
-  updateExtraMaterialItem(typeId);
-  updateBasicMaterialsCost();
-  updateExtraMaterialsCost();
+  if (basicMaterials.contains(typeId)) {
+    updateBasicMaterialItem(typeId);
+    updateBasicMaterialsCost();
+  }
+  if (extraMaterials.contains(typeId)) {
+    updateExtraMaterialItem(typeId);
+    updateExtraMaterialsCost();
+  }
+  if (basicMaterials.contains(typeId) || extraMaterials.contains(typeId))
+    updateTotalMaterialsCost();
 }
 
 QMap<int, int> BlueprintCalculatorWidget::getBasicMaterials() const
@@ -176,6 +183,14 @@ void BlueprintCalculatorWidget::updateExtraMaterialsCost()
   QString str = qIsNaN(cost) ? tr("N/A") : locale.toString(cost, 'f', 2);
   str += " ISK";
   ui->extraMaterialsCostLabel->setText(str);
+}
+
+void BlueprintCalculatorWidget::updateTotalMaterialsCost()
+{
+  double cost = getBasicMaterialsCost() + getExtraMaterialsCost();
+  QString str = qIsNaN(cost) ? tr("N/A") : locale.toString(cost, 'f', 2);
+  str += " ISK";
+  ui->materialsCostLabel->setText(str);
 }
 
 void BlueprintCalculatorWidget::requestPrices()

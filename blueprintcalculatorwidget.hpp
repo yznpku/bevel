@@ -29,6 +29,7 @@ private:
   double getExtraMaterialsCost() const;
   void updateBasicMaterialsCost();
   void updateExtraMaterialsCost();
+  void updateTotalMaterialsCost();
   void requestPrices();
   void fillTables();
   void updateBasicMaterialItem(int typeId);

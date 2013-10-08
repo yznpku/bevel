@@ -97,6 +97,8 @@ void BlueprintCalculatorWidget::blueprintDropped(int blueprintId)
   updateBasicMaterialsCost();
   updateExtraMaterialsCost();
   updateTotalMaterialsCost();
+  updateProductSellPrice();
+  updateGrossProfit();
 }
 
 void BlueprintCalculatorWidget::priceUpdated(int typeId)
@@ -109,8 +111,14 @@ void BlueprintCalculatorWidget::priceUpdated(int typeId)
     updateExtraMaterialItem(typeId);
     updateExtraMaterialsCost();
   }
-  if (basicMaterials.contains(typeId) || extraMaterials.contains(typeId))
+  if (basicMaterials.contains(typeId) || extraMaterials.contains(typeId)) {
     updateTotalMaterialsCost();
+    updateGrossProfit();
+  }
+  if (typeId == productId) {
+    updateProductSellPrice();
+    updateGrossProfit();
+  }
 }
 
 QMap<int, int> BlueprintCalculatorWidget::getBasicMaterials() const
@@ -193,6 +201,22 @@ void BlueprintCalculatorWidget::updateTotalMaterialsCost()
   ui->materialsCostLabel->setText(str);
 }
 
+void BlueprintCalculatorWidget::updateProductSellPrice()
+{
+  double sellPrice = market->getSellPrice(productId);
+  QString str = qIsNaN(sellPrice) ? tr("N/A") : locale.toString(sellPrice, 'f', 2);
+  str += " ISK";
+  ui->sellPriceLabel->setText(str);
+}
+
+void BlueprintCalculatorWidget::updateGrossProfit()
+{
+  double grossProfit = market->getSellPrice(productId) - getBasicMaterialsCost() - getExtraMaterialsCost();
+  QString str = qIsNaN(grossProfit) ? tr("N/A") : locale.toString(grossProfit, 'f', 2);
+  str += " ISK";
+  ui->profitLabel->setText(str);
+}
+
 void BlueprintCalculatorWidget::requestPrices()
 {
   for (QMapIterator<int, int> i(basicMaterials); i.hasNext();) {
@@ -203,6 +227,7 @@ void BlueprintCalculatorWidget::requestPrices()
     i.next();
     market->requestPrice(i.key());
   }
+  market->requestPrice(productId);
 }
 
 void BlueprintCalculatorWidget::fillTables()

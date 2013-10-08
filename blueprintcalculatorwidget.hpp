@@ -30,6 +30,8 @@ private:
   void updateBasicMaterialsCost();
   void updateExtraMaterialsCost();
   void updateTotalMaterialsCost();
+  void updateProductSellPrice();
+  void updateGrossProfit();
   void requestPrices();
   void fillTables();
   void updateBasicMaterialItem(int typeId);

@@ -41,7 +41,8 @@ HEADERS += global.hpp \
     blueprintcalculatorwidget.hpp \
     blueprintpixmaplabel.hpp \
     requestpriceevent.hpp \
-    skillrequirementtree.hpp
+    skillrequirementtree.hpp \
+    attributetree.h
 SOURCES += global.cpp \
            item_index_dock.cpp \
            main.cpp \
@@ -74,7 +75,8 @@ SOURCES += global.cpp \
     blueprintcalculatorwidget.cpp \
     blueprintpixmaplabel.cpp \
     requestpriceevent.cpp \
-    skillrequirementtree.cpp
+    skillrequirementtree.cpp \
+    attributetree.cpp
 
 FORMS += \
     itemdetailswidget.ui \

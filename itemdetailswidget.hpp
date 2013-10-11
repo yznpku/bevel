@@ -2,12 +2,14 @@
 #define ITEMDETAILSWIDGET_HPP
 
 #include <QWidget>
-#include <attribute_set.hpp>
+#include "attribute_set.hpp"
 
 class QTableWidget;
 class QTabWidget;
 class QTextEdit;
+class AttributeTree;
 class SkillRequirementTree;
+class QTreeWidgetItem;
 
 namespace Ui {
   class ItemDetailsWidget;
@@ -22,8 +24,9 @@ public:
   ~ItemDetailsWidget();
 private:
   void init();
-  void fillTables();
-  void fillSkillRequirementTree();
+  void initDescriptionTab();
+  void initAttributeTree();
+  void initSkillRequirementTree();
   void fillTabs();
 private:
   Ui::ItemDetailsWidget *ui;
@@ -31,7 +34,9 @@ private:
   AttributeSet as;
   QTabWidget* tabs;
   QMap<int, QTableWidget*> tableOfCategory;
+  QMap<int, QTreeWidgetItem*> itemOfCategory;
   QTextEdit* descriptionTab;
+  AttributeTree* at;
   SkillRequirementTree* srt;
 };
 

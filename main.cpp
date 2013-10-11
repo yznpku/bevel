@@ -36,6 +36,7 @@ int main(int argc, char** argv) {
   Settings::initSettings();
 
   mainWindow = new MainWindow();
+  mainWindow->setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
   mainWindow->show();
 
   CharacterIndexDock* ci = new CharacterIndexDock();
@@ -43,13 +44,17 @@ int main(int argc, char** argv) {
   ci->show();
   ItemIndexDock* ii = new ItemIndexDock();
   ii->show();
-  MarketDock* marketDock = new MarketDock(mainWindow);
+  MarketDock* marketDock = new MarketDock();
+  mainWindow->addDockWidget(Qt::TopDockWidgetArea, marketDock, Qt::Vertical);
   marketDock->show();
-  marketDock->setFloating(true);
   mainWindow->splitDockWidget(ci, ii, Qt::Vertical);
 
+  QDockWidget* blueprintCalculatorDock = new QDockWidget(QObject::tr("Blueprint Calculator"));
   BlueprintCalculatorWidget* bcw = new BlueprintCalculatorWidget(mainWindow);
-  bcw->show();
+  blueprintCalculatorDock->setWidget(bcw);
+  mainWindow->addDockWidget(Qt::TopDockWidgetArea, blueprintCalculatorDock, Qt::Vertical);
+  mainWindow->tabifyDockWidget(marketDock, blueprintCalculatorDock);
+  blueprintCalculatorDock->show();
 
   return app.exec();
 }

@@ -1,4 +1,4 @@
-#include "skill_requirement_tree.hpp"
+#include "skillrequirementtree.hpp"
 
 #include <QHeaderView>
 #include <QTreeWidgetItem>
@@ -14,7 +14,7 @@ SkillRequirementTree::SkillRequirementTree(int typeId) {
   header()->setStretchLastSection(false);
   header()->setSectionResizeMode(0, QHeaderView::Stretch);
   header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
-  QTreeWidgetItem* root = new QTreeWidgetItem(this, QStringList({as.name, ""}));
+  QTreeWidgetItem* root = invisibleRootItem();
   typeOfItem[root] = typeId;
   addSkillRequirementFor(root);
   expandAll();

@@ -13,7 +13,7 @@
 
 #include "attribute_set.hpp"
 #include "global.hpp"
-#include "skill_requirement_tree.hpp"
+#include "skillrequirementtree.hpp"
 
 ItemDetailsWidget::ItemDetailsWidget(int typeId, QWidget* parent)
   : QWidget(parent) {

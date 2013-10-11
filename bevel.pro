@@ -14,7 +14,6 @@ HEADERS += global.hpp \
            item_index_dock.hpp \
            main_window.hpp \
            attribute_set.hpp \
-           skill_requirement_tree.hpp \
            character.hpp \
            character_list.hpp \
            character_index_dock.hpp \
@@ -41,13 +40,13 @@ HEADERS += global.hpp \
     typepixmaplabel.hpp \
     blueprintcalculatorwidget.hpp \
     blueprintpixmaplabel.hpp \
-    requestpriceevent.hpp
+    requestpriceevent.hpp \
+    skillrequirementtree.hpp
 SOURCES += global.cpp \
            item_index_dock.cpp \
            main.cpp \
            main_window.cpp \
            attribute_set.cpp \
-           skill_requirement_tree.cpp \
            character.cpp \
            character_list.cpp \
            character_index_dock.cpp \
@@ -74,7 +73,8 @@ SOURCES += global.cpp \
     typepixmaplabel.cpp \
     blueprintcalculatorwidget.cpp \
     blueprintpixmaplabel.cpp \
-    requestpriceevent.cpp
+    requestpriceevent.cpp \
+    skillrequirementtree.cpp
 
 FORMS += \
     itemdetailswidget.ui \

@@ -38,8 +38,8 @@ private slots:
 private:
   int typeId;
   QNetworkReply* reply;
-  QMovie* loaderMovie;
-  QLabel* statusLabel;
+//  QMovie* loaderMovie;
+//  QLabel* statusLabel;
   QPushButton* refreshOrStopButton;
   ButtonState buttonState;
 private:

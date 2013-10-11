@@ -28,21 +28,9 @@ MarketOrdersWidget::MarketOrdersWidget(QWidget *parent) :
     table->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
   }
 
-  loaderMovie = new QMovie(qApp->applicationDirPath() + "/image/loader.gif");
-  statusLabel = new QLabel("Hello");
   refreshOrStopButton = new QPushButton();
   setButtonState(RefreshState);
-  QWidget* cornerWidget = new QWidget();
-  QHBoxLayout* layout = new QHBoxLayout();
-  layout->setMargin(0);
-  layout->addWidget(statusLabel);
-  layout->addWidget(refreshOrStopButton);
-  cornerWidget->setLayout(layout);
-  statusLabel->setMovie(loaderMovie);
-
-  statusLabel->hide();
-  refreshOrStopButton->hide();
-  ui->tabs->setCornerWidget(cornerWidget);
+  ui->tabs->setCornerWidget(refreshOrStopButton);
 
   typeId = -1;
   connect(ui->typePixmapLabel, SIGNAL(typeDropped(int)),
@@ -69,10 +57,8 @@ void MarketOrdersWidget::typeDropped(int typeId)
 
   reply = Network::getOrders(typeId, Settings::getMarketOrdersTimeLimitSetting());
   refreshOrStopButton->show();
-  statusLabel->show();
-  loaderMovie->start();
-
   setButtonState(StopState);
+
   connect(reply, SIGNAL(finished()),
           this, SLOT(replyFinished()));
 }
@@ -84,8 +70,6 @@ void MarketOrdersWidget::replyFinished()
   clearTable(ui->sellOrdersTable);
   clearTable(ui->buyOrdersTable);
   parseReply(xmlString);
-  loaderMovie->stop();
-  statusLabel->hide();
   setButtonState(RefreshState);
 }
 
@@ -171,7 +155,5 @@ void MarketOrdersWidget::refresh()
 void MarketOrdersWidget::stop()
 {
   reply->deleteLater();
-  loaderMovie->stop();
-  statusLabel->hide();
   setButtonState(RefreshState);
 }

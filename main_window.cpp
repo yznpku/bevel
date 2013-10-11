@@ -5,5 +5,5 @@
 MainWindow::MainWindow() {
   setCentralWidget(new QWidget());
   setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks);
-  resize(640, 480);
+  resize(960, 600);
 }

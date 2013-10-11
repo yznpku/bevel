@@ -14,6 +14,8 @@ BlueprintCalculatorWidget::BlueprintCalculatorWidget(QWidget *parent) :
   ui->setupUi(this);
   setAttribute(Qt::WA_DeleteOnClose);
   setWindowFlags(Qt::Dialog);
+  ui->materialsCostLabel->setBackgroundRole(QPalette::Window);
+  ui->materialsCostLabel->setAutoFillBackground(true);
   ui->productPixmap->setFixedSize(64, 64);
   ui->productHorizontalLayout->setAlignment(ui->productGridLayout, Qt::AlignTop);
   ui->manufacturingTab->layout()->setAlignment(ui->manufacturingVerticalLayout, Qt::AlignTop);

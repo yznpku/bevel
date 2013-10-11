@@ -24,6 +24,7 @@ int main(int argc, char** argv) {
   QFont defaultFont;
   defaultFont.setFamily("Georgia");
   QApplication::setFont(defaultFont);
+  qApp->setStyleSheet("QLineEdit:read-only { background-color: rgba(0, 0, 0, 0) }");
 
   QSqlDatabase staticDatabase = QSqlDatabase::addDatabase("QSQLITE", "static");
   staticDatabase.setDatabaseName(qApp->applicationDirPath() + "/static.db");

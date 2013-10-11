@@ -21,7 +21,7 @@ void Market::initMarket()
   QThread* marketThread = new QThread();
   marketThread->start();
   market->moveToThread(marketThread);
-  Network::marketNetwork->moveToThread(marketThread);
+  Network::priceNetwork->moveToThread(marketThread);
 }
 
 double Market::getSellPrice(int typeId)

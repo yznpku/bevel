@@ -5,7 +5,8 @@
 #include <QListIterator>
 
 namespace Network {
-  extern QNetworkAccessManager* marketNetwork;
+  extern QNetworkAccessManager* priceNetwork;
+  extern QNetworkAccessManager* ordersNetwork;
 
   void initNetwork();
   QNetworkReply* getOrders(int typeId, int timeLimit, int regionLimit = -1, int systemLimit = -1);

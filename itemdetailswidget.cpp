@@ -52,7 +52,9 @@ void ItemDetailsWidget::init() {
 void ItemDetailsWidget::initDescriptionTab()
 {
   descriptionTab = new QTextEdit();
-  descriptionTab->setText(as.description);
+  QString description = as.description;
+  description.replace("\n", "<br>");
+  descriptionTab->setHtml(description);
 }
 
 void ItemDetailsWidget::initAttributeTree()

@@ -144,7 +144,7 @@ QPixmap* getTypePixmap32(int typeId) {
 
 QPixmap* getTypePixmap64(int typeId) {
   if (!typePixmap64.contains(typeId))
-    typePixmap64[typeId] = new QPixmap(QString(qApp->applicationDirPath() + "./Types/%1_64.png")
+    typePixmap64[typeId] = new QPixmap(QString(qApp->applicationDirPath() + "/Types/%1_64.png")
                                        .arg(QString::number(typeId)));
   return typePixmap64[typeId];
 }
@@ -153,6 +153,6 @@ QPixmap getIconPixmap(const QString& name)
 {
   if (!iconPixmap.contains(name))
     iconPixmap[name] = QPixmap(QString(qApp->applicationDirPath() +
-                                       "./Icons/items/" + name + ".png"));
+                                       "/Icons/items/" + name + ".png"));
   return iconPixmap[name];
 }

@@ -1,9 +1,12 @@
 #include "characterskilltreeitemnameandskillpointswidget.hpp"
 #include "ui_characterskilltreeitemnameandskillpointswidget.h"
 
+#include <cmath>
 #include "character.hpp"
 #include "global.hpp"
 #include "queries.hpp"
+
+using std::ceil;
 
 CharacterSkillTreeItemNameAndSkillPointsWidget::
 CharacterSkillTreeItemNameAndSkillPointsWidget(QWidget* parent) :

@@ -31,6 +31,7 @@ MarketOrdersWidget::MarketOrdersWidget(QWidget *parent) :
   refreshOrStopButton = new QPushButton();
   setButtonState(RefreshState);
   ui->tabs->setCornerWidget(refreshOrStopButton);
+  refreshOrStopButton->hide();
 
   typeId = -1;
   connect(ui->typePixmapLabel, SIGNAL(typeDropped(int)),

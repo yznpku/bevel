@@ -18,7 +18,7 @@ void AttributeTree::init(const AttributeSet& as)
 {
   this->as = as;
   QSqlQuery attributeQuery(QSqlDatabase::database("static"));
-  attributeQuery.prepare(QString("select ATTRIBUTENAME, CATEGORYID, PUBLISHED "
+  attributeQuery.prepare(QString("select DISPLAYNAME, CATEGORYID, PUBLISHED "
                                  "from dgmAttributeTypes "
                                  "where ATTRIBUTEID = :id"));
   for (QMapIterator<int, double> i(as.attr); i.hasNext();) {
@@ -27,7 +27,7 @@ void AttributeTree::init(const AttributeSet& as)
     attributeQuery.bindValue(":id", attributeId);
     attributeQuery.exec();
     attributeQuery.next();
-    QString attributeName = attributeQuery.value(0).toString();
+    QString displayName = attributeQuery.value(0).toString();
     int categoryId = attributeQuery.value(1).toInt();
     if (!categoryId)            // Put attribute without a category
       categoryId = 7;           // into category Miscellaneous
@@ -45,7 +45,7 @@ void AttributeTree::init(const AttributeSet& as)
       QString categoryName = categoryNameQuery.value(0).toString();
       itemOfCategory[categoryId] = new QTreeWidgetItem(this, {categoryName, ""});
     }
-    QTreeWidgetItem* item = new QTreeWidgetItem({decamelize(attributeName),
+    QTreeWidgetItem* item = new QTreeWidgetItem({displayName,
                                                 QString::number(i.value(), 'f', 2)});
     itemOfCategory[categoryId]->addChild(item);
   }

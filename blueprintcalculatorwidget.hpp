@@ -22,6 +22,8 @@ public:
 private slots:
   void blueprintDropped(int blueprintId);
   void priceUpdated(int typeId);
+  void basicMaterialInfoButtonClicked(const QModelIndex& index);
+  void extraMaterialInfoButtonClicked(const QModelIndex& index);
 private:
   QMap<int, int> getBasicMaterials() const;
   QMap<int, int> getExtraMaterials() const;
@@ -47,6 +49,7 @@ private:
   QMap<int, int> extraMaterials;
   QMap<int, QTreeWidgetItem*> itemOfBasicMaterial;
   QMap<int, QTreeWidgetItem*> itemOfExtraMaterial;
+  QMap<QTreeWidgetItem*, int> materialOfItem;
   QLocale locale;
 private:
   Ui::BlueprintCalculatorWidget *ui;

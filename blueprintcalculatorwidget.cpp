@@ -2,6 +2,8 @@
 #include "ui_blueprintcalculatorwidget.h"
 
 #include <QMapIterator>
+#include "pixmapbuttondelegate.hpp"
+#include "itemdetailswidget.hpp"
 #include "global.hpp"
 #include "queries.hpp"
 #include "market.hpp"
@@ -35,6 +37,9 @@ BlueprintCalculatorWidget::BlueprintCalculatorWidget(QWidget *parent) :
   ui->basicMaterialsTable->header()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
   ui->basicMaterialsTable->header()->setSectionResizeMode(4, QHeaderView::ResizeToContents);
   ui->basicMaterialsTable->header()->setSectionResizeMode(5, QHeaderView::ResizeToContents);
+  PixmapButtonDelegate* basicMaterialsTableInfoButtonDelegate =
+      new PixmapButtonDelegate(getIconPixmap("38_16_208"));
+  ui->basicMaterialsTable->setItemDelegateForColumn(5, basicMaterialsTableInfoButtonDelegate);
 
   ui->extraMaterialsTable->setColumnCount(4);
   ui->extraMaterialsTable->setHeaderItem(new QTreeWidgetItem({tr("Name"),
@@ -45,8 +50,15 @@ BlueprintCalculatorWidget::BlueprintCalculatorWidget(QWidget *parent) :
   ui->extraMaterialsTable->header()->setSectionResizeMode(0, QHeaderView::Stretch);
   ui->extraMaterialsTable->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
   ui->extraMaterialsTable->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
-  ui->extraMaterialsTable->header()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
+  ui->extraMaterialsTable->header()->setSectionResizeMode(3, QHeaderView::ResizeToContents);  
+  PixmapButtonDelegate* extraMaterialsTableInfoButtonDelegate =
+      new PixmapButtonDelegate(getIconPixmap("38_16_208"));
+  ui->extraMaterialsTable->setItemDelegateForColumn(3, extraMaterialsTableInfoButtonDelegate);
 
+  connect(basicMaterialsTableInfoButtonDelegate, SIGNAL(clicked(QModelIndex)),
+          this, SLOT(basicMaterialInfoButtonClicked(QModelIndex)));
+  connect(extraMaterialsTableInfoButtonDelegate, SIGNAL(clicked(QModelIndex)),
+          this, SLOT(extraMaterialInfoButtonClicked(QModelIndex)));
   connect(ui->blueprintPixmapLabel, SIGNAL(typeDropped(int)),
           this, SLOT(blueprintDropped(int)));
   connect(market, SIGNAL(priceUpdated(int)),
@@ -121,6 +133,28 @@ void BlueprintCalculatorWidget::priceUpdated(int typeId)
     updateProductSellPrice();
     updateGrossProfit();
   }
+}
+
+void BlueprintCalculatorWidget::basicMaterialInfoButtonClicked(const QModelIndex& index)
+{
+  Q_UNUSED(index)
+  QTreeWidgetItem* item = ui->basicMaterialsTable->selectedItems()[0];
+  if (!materialOfItem.contains(item))
+    return;
+  int typeId = materialOfItem[item];
+  ItemDetailsWidget* widget = new ItemDetailsWidget(typeId, mainWindow);
+  widget->show();
+}
+
+void BlueprintCalculatorWidget::extraMaterialInfoButtonClicked(const QModelIndex& index)
+{
+  Q_UNUSED(index)
+  QTreeWidgetItem* item = ui->extraMaterialsTable->selectedItems()[0];
+  if (!materialOfItem.contains(item))
+    return;
+  int typeId = materialOfItem[item];
+  ItemDetailsWidget* widget = new ItemDetailsWidget(typeId, mainWindow);
+  widget->show();
 }
 
 QMap<int, int> BlueprintCalculatorWidget::getBasicMaterials() const
@@ -245,6 +279,7 @@ void BlueprintCalculatorWidget::fillTables()
     item->setIcon(0, QIcon(*getTypePixmap32(i.key())));
     ui->basicMaterialsTable->addTopLevelItem(item);
     itemOfBasicMaterial[i.key()] = item;
+    materialOfItem[item] = i.key();
     updateBasicMaterialItem(i.key());
   }
   for (QMapIterator<int, int> i(extraMaterials); i.hasNext();) {
@@ -253,6 +288,7 @@ void BlueprintCalculatorWidget::fillTables()
     item->setIcon(0, QIcon(*getTypePixmap32(i.key())));
     ui->extraMaterialsTable->addTopLevelItem(item);
     itemOfExtraMaterial[i.key()] = item;
+    materialOfItem[item] = i.key();
     updateExtraMaterialItem(i.key());
   }
 }

@@ -208,3 +208,15 @@ QSqlQuery* Queries::getExtraMaterialsQuery()
   }
   return extraMaterialsQuery;
 }
+
+QSqlQuery* unitDisplayNameQuery = 0;
+QSqlQuery* Queries::getUnitDisplayNameQuery()
+{
+  if (!unitDisplayNameQuery) {
+    unitDisplayNameQuery = new QSqlQuery(QSqlDatabase::database("static"));
+    unitDisplayNameQuery->prepare("SELECT displayName "
+                                  "FROM eveUnits "
+                                  "WHERE unitId = :id");
+  }
+  return unitDisplayNameQuery;
+}

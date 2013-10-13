@@ -16,6 +16,7 @@ extern Market* market;
 
 // helper functions
 QString decamelize(const QString& str); 
+QString intOrDoubleToString(double x, int precision = 2);
 
 // resource access
 QPixmap* getTypePixmap32(int typeId);

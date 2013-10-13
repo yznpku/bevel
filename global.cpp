@@ -156,3 +156,14 @@ QPixmap getIconPixmap(const QString& name)
                                        "/Icons/items/" + name + ".png"));
   return iconPixmap[name];
 }
+
+
+QString intOrDoubleToString(double x, int precision)
+{
+  if (x > 1e9)
+    return QString::number(x, 'g', precision);
+  else if (x == int(x))
+    return QString::number(int(x));
+  else
+    return QString::number(x, 'g', precision);
+}

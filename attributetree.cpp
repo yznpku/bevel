@@ -18,7 +18,7 @@ void AttributeTree::init(const AttributeSet& as)
 {
   this->as = as;
   QSqlQuery attributeQuery(QSqlDatabase::database("static"));
-  attributeQuery.prepare(QString("select DISPLAYNAME, CATEGORYID, PUBLISHED "
+  attributeQuery.prepare(QString("select DISPLAYNAME, CATEGORYID, PUBLISHED, UNITID "
                                  "from dgmAttributeTypes "
                                  "where ATTRIBUTEID = :id"));
   for (QMapIterator<int, double> i(as.attr); i.hasNext();) {
@@ -34,6 +34,7 @@ void AttributeTree::init(const AttributeSet& as)
     bool published = attributeQuery.value(2).toBool();
     if (!published)
       continue;
+    int unitId = attributeQuery.value(3).toInt();
     if (!itemOfCategory.contains(categoryId)) {
       QSqlQuery categoryNameQuery(QSqlDatabase::database("static"));
       categoryNameQuery.prepare("SELECT categoryName "
@@ -45,8 +46,15 @@ void AttributeTree::init(const AttributeSet& as)
       QString categoryName = categoryNameQuery.value(0).toString();
       itemOfCategory[categoryId] = new QTreeWidgetItem(this, {categoryName, ""});
     }
-    QTreeWidgetItem* item = new QTreeWidgetItem({displayName,
-                                                QString::number(i.value(), 'f', 2)});
+    QString value = intOrDoubleToString(i.value());
+    QSqlQuery* unitDisplayNameQuery = Queries::getUnitDisplayNameQuery();
+    unitDisplayNameQuery->bindValue(":id", unitId);
+    unitDisplayNameQuery->exec();
+    if (unitDisplayNameQuery->next()) {
+      QString unitDisplayName = unitDisplayNameQuery->value(0).toString();
+      value = value + ' ' + unitDisplayName;
+    }
+    QTreeWidgetItem* item = new QTreeWidgetItem({displayName, value});
     itemOfCategory[categoryId]->addChild(item);
   }
   expandAll();

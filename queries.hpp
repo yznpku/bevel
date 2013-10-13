@@ -20,6 +20,7 @@ namespace Queries {
   QSqlQuery* getTypePortionSizeQuery();
   QSqlQuery* getBasicMaterialsQuery();
   QSqlQuery* getExtraMaterialsQuery();
+  QSqlQuery* getUnitDisplayNameQuery();
 
   QSqlQuery* getLastInsertRowidQuery();
 

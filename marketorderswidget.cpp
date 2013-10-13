@@ -93,8 +93,9 @@ void MarketOrdersWidget::parseReplyForTable(const QString& xmlString, QTableWidg
   query.evaluateTo(&strlist);
   for (int i = 0; i < strlist.size(); i++) {
     QStringList splitted = strlist[i].split("/");
+    int dotIndex = splitted[3].indexOf(".");
     addTableRow(table, splitted[0].toInt(), splitted[1].toDouble(),
-                       splitted[2].toInt(), splitted[3]);
+                       splitted[2].toInt(), splitted[3].left(dotIndex));
   }
 }
 

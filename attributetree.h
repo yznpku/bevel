@@ -14,6 +14,7 @@ public:
 private:
   AttributeSet as;
   QMap<int, QTreeWidgetItem*> itemOfCategory;
+  QString valueToString(int attributeId, int unitId);
 };
 
 #endif // ATTRIBUTETREE_H

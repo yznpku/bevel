@@ -1,6 +1,7 @@
 #include "attributetree.h"
 
 #include <QHeaderView>
+#include <QList>
 #include "global.hpp"
 #include "queries.hpp"
 
@@ -46,16 +47,28 @@ void AttributeTree::init(const AttributeSet& as)
       QString categoryName = categoryNameQuery.value(0).toString();
       itemOfCategory[categoryId] = new QTreeWidgetItem(this, {categoryName, ""});
     }
-    QString value = intOrDoubleToString(i.value());
-    QSqlQuery* unitDisplayNameQuery = Queries::getUnitDisplayNameQuery();
-    unitDisplayNameQuery->bindValue(":id", unitId);
-    unitDisplayNameQuery->exec();
-    if (unitDisplayNameQuery->next()) {
-      QString unitDisplayName = unitDisplayNameQuery->value(0).toString();
-      value = value + ' ' + unitDisplayName;
-    }
-    QTreeWidgetItem* item = new QTreeWidgetItem({displayName, value});
+
+    QTreeWidgetItem* item = new QTreeWidgetItem({displayName, valueToString(i.key(), unitId)});
     itemOfCategory[categoryId]->addChild(item);
   }
   expandAll();
+}
+
+QString AttributeTree::valueToString(int attributeId, int unitId)
+{
+  static const QList<int> resistanceAttributes = {109, 110, 111, 113,
+                                                  267, 268, 269, 270,
+                                                  271, 272, 273, 274};
+  double value = as.attr[attributeId];
+  if (resistanceAttributes.contains(attributeId))
+    value = 100 * (1 - value);
+  QString str = intOrDoubleToString(value);
+  QSqlQuery* unitDisplayNameQuery = Queries::getUnitDisplayNameQuery();
+  unitDisplayNameQuery->bindValue(":id", unitId);
+  unitDisplayNameQuery->exec();
+  if (unitDisplayNameQuery->next()) {
+    QString unitDisplayName = unitDisplayNameQuery->value(0).toString();
+    str = str + ' ' + unitDisplayName;
+  }
+  return str;
 }

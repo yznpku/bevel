@@ -29,20 +29,20 @@ CharacterSkillTree::CharacterSkillTree(QWidget* parent)
 
 void CharacterSkillTree::initWithCharacter(Character* chr) {
   this->chr = chr;
-  QSqlQuery* skillGroupQuery = Queries::getGroupOfTypeQuery();
+  QSqlQuery* groupOfSkillQuery = Queries::getQuery(Queries::GroupOfTypeQuery);
   QMap<int, int> groupOfSkill;
   QSet<int> groups;
   for (QMapIterator<int, double> i(chr->skills); i.hasNext();) {
     i.next();
-    skillGroupQuery->bindValue(":id", i.key());
-    skillGroupQuery->exec();
-    skillGroupQuery->next();
-    int groupId = skillGroupQuery->value(0).toInt();
+    groupOfSkillQuery->bindValue(":id", i.key());
+    groupOfSkillQuery->exec();
+    groupOfSkillQuery->next();
+    int groupId = groupOfSkillQuery->value(0).toInt();
     groupOfSkill[i.key()] = groupId;
     groups << groupId;
   }
 
-  QSqlQuery* groupNameQuery = Queries::getGroupNameQuery();
+  QSqlQuery* groupNameQuery = Queries::getQuery(Queries::GroupNameQuery);
   for (QSetIterator<int> i(groups); i.hasNext();) {
     int groupId = i.next();
     groupNameQuery->bindValue(":id", groupId);
@@ -85,7 +85,7 @@ void CharacterSkillTree::contextMenuEvent(QContextMenuEvent *e) {
 void CharacterSkillTree::dragEnterEvent(QDragEnterEvent* e) {
   if (e->mimeData()->hasFormat("bevel/type-variant")) {
     int typeId = TypeVariant::fromMimeData(e->mimeData())[0].toTypeId();
-    QSqlQuery* categoryQuery = Queries::getCategoryOfTypeQuery();
+    QSqlQuery* categoryQuery = Queries::getQuery(Queries::CategoryOfTypeQuery);
     categoryQuery->bindValue(":id", typeId);
     categoryQuery->exec();
     categoryQuery->next();
@@ -145,7 +145,7 @@ void CharacterSkillTree::setSkillPointsActionTriggered() {
     QTreeWidgetItem* item = selectedItems()[0];
     if (skillOfItem.contains(item)) {
       int skillId = skillOfItem[item];
-      QSqlQuery* skillMultiplierQuery = Queries::getSkillMultiplierQuery();
+      QSqlQuery* skillMultiplierQuery = Queries::getQuery(Queries::SkillMultiplierQuery);
       skillMultiplierQuery->bindValue(":id", skillId);
       skillMultiplierQuery->exec();
       skillMultiplierQuery->next();
@@ -196,14 +196,14 @@ void CharacterSkillTree::deleteSkillItem(int skillId) {
 }
 
 void CharacterSkillTree::addSkillItem(int skillId) {
-  QSqlQuery* groupOfSkillQuery = Queries::getGroupOfTypeQuery();
+  QSqlQuery* groupOfSkillQuery = Queries::getQuery(Queries::GroupOfTypeQuery);
   groupOfSkillQuery->bindValue(":id", skillId);
   groupOfSkillQuery->exec();
   groupOfSkillQuery->next();
   int groupId = groupOfSkillQuery->value(0).toInt();
 
   if (!itemOfGroup.contains(groupId)) {
-    QSqlQuery* groupNameQuery = Queries::getGroupNameQuery();
+    QSqlQuery* groupNameQuery = Queries::getQuery(Queries::GroupNameQuery);
     groupNameQuery->bindValue(":id", groupId);
     groupNameQuery->exec();
     groupNameQuery->next();

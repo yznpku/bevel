@@ -48,7 +48,7 @@ MarketOrdersWidget::~MarketOrdersWidget()
 void MarketOrdersWidget::typeDropped(int typeId)
 {
   this->typeId = typeId;
-  QSqlQuery* typeNameQuery = Queries::getTypeNameQuery();
+  QSqlQuery* typeNameQuery = Queries::getQuery(Queries::TypeNameQuery);
   typeNameQuery->bindValue(":id", typeId);
   typeNameQuery->exec();
   typeNameQuery->next();
@@ -106,7 +106,7 @@ void MarketOrdersWidget::addTableRow(QTableWidget* table, int stationId, double 
   int rowId = table->rowCount();
   table->insertRow(rowId);
 
-  QSqlQuery* stationNameQuery = Queries::getStationNameQuery();
+  QSqlQuery* stationNameQuery = Queries::getQuery(Queries::StationNameQuery);
   stationNameQuery->bindValue(":id", stationId);
   stationNameQuery->exec();
   stationNameQuery->next();

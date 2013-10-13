@@ -60,7 +60,7 @@ BlueprintCalculatorWidget::~BlueprintCalculatorWidget()
 
 void BlueprintCalculatorWidget::blueprintDropped(int blueprintId)
 {
-  QSqlQuery* typeNameQuery = Queries::getTypeNameQuery();
+  QSqlQuery* typeNameQuery = Queries::getQuery(Queries::TypeNameQuery);
   typeNameQuery->bindValue(":id", blueprintId);
   typeNameQuery->exec();
   typeNameQuery->next();
@@ -68,7 +68,7 @@ void BlueprintCalculatorWidget::blueprintDropped(int blueprintId)
   ui->blueprintNameLabel->setText(QString("<h2>%1</h2>").arg(blueprintName));
   ui->blueprintInfoButton->init(blueprintId);
 
-  QSqlQuery* productQuery = Queries::getProductForBlueprintQuery();
+  QSqlQuery* productQuery = Queries::getQuery(Queries::ProductForBlueprintQuery);
   productQuery->bindValue(":id", blueprintId);
   productQuery->exec();
   productQuery->next();
@@ -81,7 +81,7 @@ void BlueprintCalculatorWidget::blueprintDropped(int blueprintId)
   ui->productPixmap->setPixmap(*getTypePixmap64(productId));
   ui->productInfoButton->init(productId);
 
-  QSqlQuery* portionSizeQuery = Queries::getTypePortionSizeQuery();
+  QSqlQuery* portionSizeQuery = Queries::getQuery(Queries::TypePortionSizeQuery);
   portionSizeQuery->bindValue(":id", productId);
   portionSizeQuery->exec();
   portionSizeQuery->next();
@@ -126,7 +126,7 @@ void BlueprintCalculatorWidget::priceUpdated(int typeId)
 QMap<int, int> BlueprintCalculatorWidget::getBasicMaterials() const
 {
   QMap<int, int> basicMaterials;
-  QSqlQuery* basicMaterialsQuery = Queries::getBasicMaterialsQuery();
+  QSqlQuery* basicMaterialsQuery = Queries::getQuery(Queries::BasicMaterialsQuery);
   basicMaterialsQuery->bindValue(":id", productId);
   basicMaterialsQuery->exec();
   while (basicMaterialsQuery->next()) {
@@ -140,13 +140,13 @@ QMap<int, int> BlueprintCalculatorWidget::getBasicMaterials() const
 QMap<int, int> BlueprintCalculatorWidget::getExtraMaterials() const
 {
   QMap<int, int> extraMaterials;
-  QSqlQuery* extraMaterialsQuery = Queries::getExtraMaterialsQuery();
+  QSqlQuery* extraMaterialsQuery = Queries::getQuery(Queries::ExtraMaterialsQuery);
   extraMaterialsQuery->bindValue(":id", blueprintId);
   extraMaterialsQuery->exec();
   while (extraMaterialsQuery->next()) {
     int materialTypeId = extraMaterialsQuery->value(0).toInt();
     int quantity = extraMaterialsQuery->value(1).toInt();
-    QSqlQuery* categoryQuery = Queries::getCategoryOfTypeQuery();
+    QSqlQuery* categoryQuery = Queries::getQuery(Queries::CategoryOfTypeQuery);
     categoryQuery->bindValue(":id", materialTypeId);
     categoryQuery->exec();
     categoryQuery->next();
@@ -281,7 +281,7 @@ QStringList BlueprintCalculatorWidget::getStringListForMaterial(int materialType
 {
   QStringList result;
 
-  QSqlQuery* typeNameQuery = Queries::getTypeNameQuery();
+  QSqlQuery* typeNameQuery = Queries::getQuery(Queries::TypeNameQuery);
   typeNameQuery->bindValue(":id", materialTypeId);
   typeNameQuery->exec();
   typeNameQuery->next();

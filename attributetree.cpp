@@ -63,7 +63,7 @@ QString AttributeTree::valueToString(int attributeId, int unitId)
   if (resistanceAttributes.contains(attributeId))
     value = 100 * (1 - value);
   QString str = intOrDoubleToString(value);
-  QSqlQuery* unitDisplayNameQuery = Queries::getUnitDisplayNameQuery();
+  QSqlQuery* unitDisplayNameQuery = Queries::getQuery(Queries::UnitDisplayNameQuery);
   unitDisplayNameQuery->bindValue(":id", unitId);
   unitDisplayNameQuery->exec();
   if (unitDisplayNameQuery->next()) {

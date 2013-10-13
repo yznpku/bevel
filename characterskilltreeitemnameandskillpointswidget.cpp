@@ -39,7 +39,7 @@ void CharacterSkillTreeItemNameAndSkillPointsWidget::updateSkillPoints() {
 }
 
 void CharacterSkillTreeItemNameAndSkillPointsWidget::querySkillName() {
-  QSqlQuery* skillNameQuery = Queries::getTypeNameQuery();
+  QSqlQuery* skillNameQuery = Queries::getQuery(Queries::TypeNameQuery);
   skillNameQuery->bindValue(":id", skillId);
   skillNameQuery->exec();
   skillNameQuery->next();
@@ -47,7 +47,7 @@ void CharacterSkillTreeItemNameAndSkillPointsWidget::querySkillName() {
 }
 
 void CharacterSkillTreeItemNameAndSkillPointsWidget::querySkillMultiplier() {
-  QSqlQuery* skillMultiplierQuery = Queries::getSkillMultiplierQuery();
+  QSqlQuery* skillMultiplierQuery = Queries::getQuery(Queries::SkillMultiplierQuery);
   skillMultiplierQuery->bindValue(":id", skillId);
   skillMultiplierQuery->exec();
   skillMultiplierQuery->next();

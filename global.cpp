@@ -23,10 +23,7 @@ QString decamelize(const QString& str) {
 }
 
 bool makeSureUserDatabaseAvailable() {
-  QSqlDatabase userDb = QSqlDatabase::addDatabase("QSQLITE", "user");
-  userDb.setDatabaseName(qApp->applicationDirPath() + "/user.db");
-  if (!userDb.open())
-    return false;
+  QSqlDatabase userDb = QSqlDatabase::database("user");
   QSqlQuery tableQuery(userDb);
   tableQuery.prepare("SELECT * "
                      "FROM sqlite_master "
@@ -77,10 +74,7 @@ bool makeSureUserDatabaseAvailable() {
 
 bool makeSureMarketDatabaseAvailable()
 {
-  QSqlDatabase marketDb = QSqlDatabase::addDatabase("QSQLITE", "market");
-  marketDb.setDatabaseName(qApp->applicationDirPath() + "/market.db");
-  if (!marketDb.open())
-    return false;
+  QSqlDatabase marketDb = QSqlDatabase::database("market");
   QSqlQuery tableQuery(marketDb);
   tableQuery.prepare("SELECT * "
                      "FROM sqlite_master "

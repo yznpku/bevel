@@ -15,6 +15,7 @@
 #include "network.hpp"
 #include "settings.hpp"
 #include "market.hpp"
+#include "queries.hpp"
 #include "blueprintcalculatorwidget.hpp"
 
 MainWindow* mainWindow;
@@ -29,12 +30,20 @@ int main(int argc, char** argv) {
   QSqlDatabase staticDatabase = QSqlDatabase::addDatabase("QSQLITE", "static");
   staticDatabase.setDatabaseName(qApp->applicationDirPath() + "/static.db");
   staticDatabase.open();
-  makeSureUserDatabaseAvailable();
-  makeSureMarketDatabaseAvailable();
+  QSqlDatabase userDatabase = QSqlDatabase::addDatabase("QSQLITE", "user");
+  userDatabase.setDatabaseName(qApp->applicationDirPath() + "/user.db");
+  userDatabase.open();
+  QSqlDatabase marketDatabase = QSqlDatabase::addDatabase("QSQLITE", "market");
+  marketDatabase.setDatabaseName(qApp->applicationDirPath() + "/market.db");
+  marketDatabase.open();
 
+  Queries::initQueries();
   Network::initNetwork();
   Market::initMarket();
   Settings::initSettings();
+
+  makeSureUserDatabaseAvailable();
+  makeSureMarketDatabaseAvailable();
 
   mainWindow = new MainWindow();
   mainWindow->setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);

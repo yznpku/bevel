@@ -7,26 +7,31 @@
 #include <QVariant>
 
 namespace Queries {
-  QSqlQuery* getSkillMultiplierQuery();
-  QSqlQuery* getTypeNameQuery();
-  QSqlQuery* getGroupNameQuery();
-  QSqlQuery* getMarketGroupNameQuery();
-  QSqlQuery* getMarketSubgroupsQuery();
-  QSqlQuery* getGroupOfTypeQuery();
-  QSqlQuery* getCategoryOfTypeQuery();
-  QSqlQuery* getStationNameQuery();
-  QSqlQuery* getBlueprintForProductQuery();
-  QSqlQuery* getProductForBlueprintQuery();
-  QSqlQuery* getTypePortionSizeQuery();
-  QSqlQuery* getBasicMaterialsQuery();
-  QSqlQuery* getExtraMaterialsQuery();
-  QSqlQuery* getUnitDisplayNameQuery();
+  enum QueryType {
+    SkillMultiplierQuery,
+    TypeNameQuery,
+    GroupNameQuery,
+    MarketGroupNameQuery,
+    GroupOfTypeQuery,
+    CategoryOfTypeQuery,
+    StationNameQuery,
+    BlueprintForProductQuery,
+    ProductForBlueprintQuery,
+    TypePortionSizeQuery,
+    BasicMaterialsQuery,
+    ExtraMaterialsQuery,
+    UnitDisplayNameQuery,
 
-  QSqlQuery* getLastInsertRowidQuery();
+    LastInsertRowidQuery,
 
-  QSqlQuery* getMarketPriceQuery();
-  QSqlQuery* getUpdateMarketPriceQuery();
-  QSqlQuery* getInsertMarketPriceQuery();
+    MarketPriceQuery,
+    UpdateMarketPriceQuery,
+    InsertMarketPriceQuery
+  };
+
+  void initQueries();
+  void registerQuery(QueryType type, const QString& databaseName, const QString& queryString);
+  QSqlQuery* getQuery(QueryType type);
 }
 
 #endif // QUERIES_HPP

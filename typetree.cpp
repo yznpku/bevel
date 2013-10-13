@@ -126,7 +126,7 @@ void TypeTree::initWithMarketGroups()
   QQueue<int> q;
   while (rootGroupQuery.next()) {
     int groupId = rootGroupQuery.value(0).toInt();
-    QSqlQuery* groupNameQuery = Queries::getMarketGroupNameQuery();
+    QSqlQuery* groupNameQuery = Queries::getQuery(Queries::MarketGroupNameQuery);
     groupNameQuery->bindValue(":id", groupId);
     groupNameQuery->exec();
     groupNameQuery->next();
@@ -153,7 +153,7 @@ void TypeTree::initWithMarketGroups()
     subgroupsQuery.exec();
     while (subgroupsQuery.next()) {
       int subgroupId = subgroupsQuery.value(0).toInt();
-      QSqlQuery* subgroupNameQuery = Queries::getMarketGroupNameQuery();
+      QSqlQuery* subgroupNameQuery = Queries::getQuery(Queries::MarketGroupNameQuery);
       subgroupNameQuery->bindValue(":id", subgroupId);
       subgroupNameQuery->exec();
       subgroupNameQuery->next();
@@ -259,11 +259,11 @@ QStringList TypeTree::getStringListForType(int typeId)
 {
   QStringList result;
 
-  QSqlQuery* nameQuery = Queries::getTypeNameQuery();
-  nameQuery->bindValue(":id", typeId);
-  nameQuery->exec();
-  nameQuery->next();
-  result << nameQuery->value(0).toString();
+  QSqlQuery* typeNameQuery = Queries::getQuery(Queries::TypeNameQuery);
+  typeNameQuery->bindValue(":id", typeId);
+  typeNameQuery->exec();
+  typeNameQuery->next();
+  result << typeNameQuery->value(0).toString();
 
   for (int i = 0; i < columns.size(); i++)
     switch (columns[i]) {

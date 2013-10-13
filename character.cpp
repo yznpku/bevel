@@ -95,7 +95,7 @@ bool Character::create() {
   if (createCharacterQuery.numRowsAffected() != 1)
     return false;
 
-  QSqlQuery* lastInsertRowidQuery = Queries::getLastInsertRowidQuery();
+  QSqlQuery* lastInsertRowidQuery = Queries::getQuery(Queries::LastInsertRowidQuery);
   lastInsertRowidQuery->exec();
   lastInsertRowidQuery->next();
   id = lastInsertRowidQuery->value(0).toInt();
@@ -135,7 +135,7 @@ void Character::addSkill(int skillId) {
 int Character::getSkillLevel(int skillId) {
   if (!skills.contains(skillId))
     return -1;
-  QSqlQuery* skillMultiplierQuery = Queries::getSkillMultiplierQuery();
+  QSqlQuery* skillMultiplierQuery = Queries::getQuery(Queries::SkillMultiplierQuery);
   skillMultiplierQuery->bindValue(":id", skillId);
   skillMultiplierQuery->exec();
   skillMultiplierQuery->next();

@@ -1,222 +1,104 @@
 #include "queries.hpp"
 
+#include <QMap>
 #include <QSqlQuery>
 #include <QSqlDatabase>
 
-QSqlQuery* lastInsertRowidQuery = 0;
-QSqlQuery* Queries::getLastInsertRowidQuery() {
-  if (!lastInsertRowidQuery) {
-    lastInsertRowidQuery = new QSqlQuery(QSqlDatabase::database("user"));
-    lastInsertRowidQuery->prepare("SELECT last_insert_rowid()");
-  }
-  return lastInsertRowidQuery;
-}
+QMap<Queries::QueryType, QSqlQuery*>* queries = 0;
 
-QSqlQuery* skillMultiplierQuery = 0;
-QSqlQuery* Queries::getSkillMultiplierQuery() {
-  if (!skillMultiplierQuery) {
-    skillMultiplierQuery = new QSqlQuery(QSqlDatabase::database("static"));
-    skillMultiplierQuery->prepare("SELECT valueFloat "
-                                  "FROM dgmTypeAttributes "
-                                  "WHERE typeId = :id "
-                                  "AND attributeId = 275");
-  }
-  return skillMultiplierQuery;
-}
-
-QSqlQuery* typeNameQuery = 0;
-QSqlQuery* Queries::getTypeNameQuery() {
-  if (!typeNameQuery) {
-    typeNameQuery = new QSqlQuery(QSqlDatabase::database("static"));
-    typeNameQuery->prepare("SELECT typeName "
-                           "FROM invTypes "
-                           "WHERE typeId = :id");
-  }
-  return typeNameQuery;
-}
-
-QSqlQuery* groupNameQuery = 0;
-QSqlQuery* Queries::getGroupNameQuery() {
-  if (!groupNameQuery) {
-    groupNameQuery = new QSqlQuery(QSqlDatabase::database("static"));
-    groupNameQuery->prepare("SELECT groupName "
-                            "FROM invGroups "
-                            "WHERE groupId = :id");
-  }
-  return groupNameQuery;
-}
-
-QSqlQuery* groupOfTypeQuery = 0;
-QSqlQuery* Queries::getGroupOfTypeQuery() {
-  if (!groupOfTypeQuery) {
-    groupOfTypeQuery = new QSqlQuery(QSqlDatabase::database("static"));
-    groupOfTypeQuery->prepare("SELECT groupId "
-                              "FROM invTypes "
-                              "WHERE typeId = :id");
-  }
-  return groupOfTypeQuery;
-}
-
-QSqlQuery* categoryOfTypeQuery = 0;
-QSqlQuery* Queries::getCategoryOfTypeQuery() {
-  if (!categoryOfTypeQuery) {
-    categoryOfTypeQuery = new QSqlQuery(QSqlDatabase::database("static"));
-    categoryOfTypeQuery->prepare("SELECT categoryId "
-                                 "FROM ( "
-                                 "  SELECT groupId "
-                                 "  FROM invTypes "
-                                 "  WHERE typeId = :id "
-                                 "  ) JOIN invGroups "
-                                 "  USING (groupId)");
-  }
-  return categoryOfTypeQuery;
-}
-
-QSqlQuery* stationNameQuery = 0;
-QSqlQuery* Queries::getStationNameQuery()
+void Queries::initQueries()
 {
-  if (!stationNameQuery) {
-    stationNameQuery = new QSqlQuery(QSqlDatabase::database("static"));
-    stationNameQuery->prepare("SELECT stationName "
-                              "FROM staStations "
-                              "WHERE stationId = :id");
-  }
-  return stationNameQuery;
+  queries = new QMap<QueryType, QSqlQuery*>();
+  registerQuery(SkillMultiplierQuery, "static",
+                "SELECT valueFloat "
+                "FROM dgmTypeAttributes "
+                "WHERE typeId = :id "
+                "AND attributeId = 275");
+  registerQuery(TypeNameQuery, "static",
+                "SELECT typeName "
+                "FROM invTypes "
+                "WHERE typeId = :id");
+  registerQuery(GroupNameQuery, "static",
+                "SELECT groupName "
+                "FROM invGroups "
+                "WHERE groupId = :id");
+  registerQuery(GroupOfTypeQuery, "static",
+                "SELECT groupId "
+                "FROM invTypes "
+                "WHERE typeId = :id");
+  registerQuery(CategoryOfTypeQuery, "static",
+                "SELECT categoryId "
+                "FROM ( "
+                "  SELECT groupId "
+                "  FROM invTypes "
+                "  WHERE typeId = :id "
+                "  ) JOIN invGroups "
+                "  USING (groupId)");
+  registerQuery(StationNameQuery, "static",
+                "SELECT stationName "
+                "FROM staStations "
+                "WHERE stationId = :id");
+  registerQuery(MarketGroupNameQuery, "static",
+                "SELECT marketGroupName "
+                "FROM invMarketGroups "
+                "WHERE marketGroupId = :id");
+  registerQuery(BlueprintForProductQuery, "static",
+                "SELECT blueprintTypeId "
+                "FROM invBlueprintTypes "
+                "WHERE productTypeId = :id");
+  registerQuery(ProductForBlueprintQuery, "static",
+                "SELECT productTypeId "
+                "FROM invBlueprintTypes "
+                "WHERE blueprintTypeId = :id");
+  registerQuery(TypePortionSizeQuery, "static",
+                "SELECT portionSize "
+                "FROM invTypes "
+                "WHERE typeId = :id");
+  registerQuery(BasicMaterialsQuery, "static",
+                "SELECT materialTypeId, quantity "
+                "FROM invTypeMaterials "
+                "WHERE typeId = :id");
+  registerQuery(ExtraMaterialsQuery, "static",
+                "SELECT requiredTypeId, quantity "
+                "FROM ramTypeRequirements "
+                "WHERE typeId = :id "
+                "  AND activityId = 1");
+  registerQuery(UnitDisplayNameQuery, "static",
+                "SELECT displayName "
+                "FROM eveUnits "
+                "WHERE unitId = :id");
+
+  registerQuery(LastInsertRowidQuery, "user",
+                "SELECT last_insert_rowid()");
+
+  registerQuery(MarketPriceQuery, "market",
+                "SELECT sellPrice, buyPrice, averagePrice, updateTime "
+                "FROM prices "
+                "WHERE typeId = :id");
+  registerQuery(UpdateMarketPriceQuery, "market",
+                "UPDATE prices "
+                "SET sellPrice = :sellPrice, "
+                "    buyPrice = :buyPrice, "
+                "    averagePrice = :averagePrice, "
+                "    updateTime = :updateTime "
+                "WHERE typeId = :id");
+  registerQuery(InsertMarketPriceQuery, "market",
+                "INSERT INTO prices "
+                "(typeId, sellPrice, buyPrice, averagePrice, updateTime) "
+                "VALUES "
+                "(:id, :sellPrice, :buyPrice, :averagePrice, :updateTime)");
+
 }
 
-QSqlQuery* marketGroupNameQuery = 0;
-QSqlQuery* Queries::getMarketGroupNameQuery()
+void Queries::registerQuery(Queries::QueryType type, const QString& databaseName, const QString& queryString)
 {
-  if (!marketGroupNameQuery) {
-    marketGroupNameQuery = new QSqlQuery(QSqlDatabase::database("static"));
-    marketGroupNameQuery->prepare("SELECT marketGroupName "
-                                  "FROM invMarketGroups "
-                                  "WHERE marketGroupId = :id");
-  }
-  return marketGroupNameQuery;
+  (*queries)[type] = new QSqlQuery(QSqlDatabase::database(databaseName));
+  (*queries)[type]->prepare(queryString);
 }
 
-QSqlQuery* marketSubgroupsQuery = 0;
-QSqlQuery* Queries::getMarketSubgroupsQuery()
+QSqlQuery* Queries::getQuery(Queries::QueryType type)
 {
-  if (!marketSubgroupsQuery) {
-    marketSubgroupsQuery = new QSqlQuery(QSqlDatabase::database("static"));
-    marketSubgroupsQuery->prepare("SELECT marketGroupId "
-                                  "FROM invMarketGroups "
-                                  "WHERE parentGroupId = :id");
-  }
-  return marketSubgroupsQuery;
-}
-
-QSqlQuery* marketPriceQuery = 0;
-QSqlQuery* Queries::getMarketPriceQuery()
-{
-  if (!marketPriceQuery) {
-    marketPriceQuery = new QSqlQuery(QSqlDatabase::database("market"));
-    marketPriceQuery->prepare("SELECT sellPrice, buyPrice, averagePrice, updateTime "
-                              "FROM prices "
-                              "WHERE typeId = :id");
-  }
-  return marketPriceQuery;
-}
-
-QSqlQuery* updateMarketPriceQuery = 0;
-QSqlQuery* Queries::getUpdateMarketPriceQuery()
-{
-  if (!updateMarketPriceQuery) {
-    updateMarketPriceQuery = new QSqlQuery(QSqlDatabase::database("market"));
-    updateMarketPriceQuery->prepare("UPDATE prices "
-                                    "SET sellPrice = :sellPrice, "
-                                    "    buyPrice = :buyPrice, "
-                                    "    averagePrice = :averagePrice, "
-                                    "    updateTime = :updateTime "
-                                    "WHERE typeId = :id");
-  }
-  return updateMarketPriceQuery;
-}
-
-QSqlQuery* insertMarketPriceQuery = 0;
-QSqlQuery* Queries::getInsertMarketPriceQuery()
-{
-  if (!insertMarketPriceQuery) {
-    insertMarketPriceQuery = new QSqlQuery(QSqlDatabase::database("market"));
-    insertMarketPriceQuery->prepare("INSERT INTO prices "
-                                    "(typeId, sellPrice, buyPrice, averagePrice, updateTime) "
-                                    "VALUES "
-                                    "(:id, :sellPrice, :buyPrice, :averagePrice, :updateTime)");
-  }
-  return insertMarketPriceQuery;
-}
-
-QSqlQuery* blueprintForProductQuery = 0;
-QSqlQuery* Queries::getBlueprintForProductQuery()
-{
-  if (!blueprintForProductQuery) {
-    blueprintForProductQuery = new QSqlQuery(QSqlDatabase::database("static"));
-    blueprintForProductQuery->prepare("SELECT blueprintTypeId "
-                                      "FROM invBlueprintTypes "
-                                      "WHERE productTypeId = :id");
-  }
-  return blueprintForProductQuery;
-}
-
-QSqlQuery* productForBlueprintQuery = 0;
-QSqlQuery* Queries::getProductForBlueprintQuery()
-{
-  if (!productForBlueprintQuery) {
-    productForBlueprintQuery = new QSqlQuery(QSqlDatabase::database("static"));
-    productForBlueprintQuery->prepare("SELECT productTypeId "
-                                      "FROM invBlueprintTypes "
-                                      "WHERE blueprintTypeId = :id");
-  }
-  return productForBlueprintQuery;
-}
-
-QSqlQuery* typePortionSizeQuery = 0;
-QSqlQuery* Queries::getTypePortionSizeQuery()
-{
-  if (!typePortionSizeQuery) {
-    typePortionSizeQuery = new QSqlQuery(QSqlDatabase::database("static"));
-    typePortionSizeQuery->prepare("SELECT portionSize "
-                                  "FROM invTypes "
-                                  "WHERE typeId = :id");
-  }
-  return typePortionSizeQuery;
-}
-
-QSqlQuery* basicMaterialsQuery = 0;
-QSqlQuery* Queries::getBasicMaterialsQuery()
-{
-  if (!basicMaterialsQuery) {
-    basicMaterialsQuery = new QSqlQuery(QSqlDatabase::database("static"));
-    basicMaterialsQuery->prepare("SELECT materialTypeId, quantity "
-                                 "FROM invTypeMaterials "
-                                 "WHERE typeId = :id");
-  }
-  return basicMaterialsQuery;
-}
-
-QSqlQuery* extraMaterialsQuery = 0;
-QSqlQuery* Queries::getExtraMaterialsQuery()
-{
-  if (!extraMaterialsQuery) {
-    extraMaterialsQuery = new QSqlQuery(QSqlDatabase::database("static"));
-    extraMaterialsQuery->prepare("SELECT requiredTypeId, quantity "
-                                 "FROM ramTypeRequirements "
-                                 "WHERE typeId = :id "
-                                 "  AND activityId = 1");
-  }
-  return extraMaterialsQuery;
-}
-
-QSqlQuery* unitDisplayNameQuery = 0;
-QSqlQuery* Queries::getUnitDisplayNameQuery()
-{
-  if (!unitDisplayNameQuery) {
-    unitDisplayNameQuery = new QSqlQuery(QSqlDatabase::database("static"));
-    unitDisplayNameQuery->prepare("SELECT displayName "
-                                  "FROM eveUnits "
-                                  "WHERE unitId = :id");
-  }
-  return unitDisplayNameQuery;
+  if (!queries->contains(type))
+    qWarning("No such type registered.");
+  return (*queries)[type];
 }

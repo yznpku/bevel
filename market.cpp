@@ -28,7 +28,7 @@ double Market::getSellPrice(int typeId)
 {
   databaseLock.lockForRead();
 
-  QSqlQuery* marketPriceQuery = Queries::getMarketPriceQuery();
+  QSqlQuery* marketPriceQuery = Queries::getQuery(Queries::MarketPriceQuery);
   marketPriceQuery->bindValue(":id", typeId);
   marketPriceQuery->exec();
 
@@ -97,7 +97,7 @@ void Market::priceReplyFinished()
 
   databaseLock.lockForWrite();
 
-  QSqlQuery* updateQuery = Queries::getUpdateMarketPriceQuery();
+  QSqlQuery* updateQuery = Queries::getQuery(Queries::UpdateMarketPriceQuery);
   updateQuery->bindValue(":id", typeId);
   updateQuery->bindValue(":sellPrice", sellPrice);
   updateQuery->bindValue(":buyPrice", buyPrice);
@@ -106,7 +106,7 @@ void Market::priceReplyFinished()
   updateQuery->exec();
 
   if (updateQuery->numRowsAffected() < 1) {
-    QSqlQuery* insertQuery = Queries::getInsertMarketPriceQuery();
+    QSqlQuery* insertQuery = Queries::getQuery(Queries::InsertMarketPriceQuery);
     insertQuery->bindValue(":id", typeId);
     insertQuery->bindValue(":sellPrice", sellPrice);
     insertQuery->bindValue(":buyPrice", buyPrice);

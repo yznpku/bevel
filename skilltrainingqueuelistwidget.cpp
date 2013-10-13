@@ -30,7 +30,7 @@ void SkillTrainingQueueListWidget::dragEnterEvent(QDragEnterEvent* e) {
     willAccept = true;
   if (e->mimeData()->hasFormat("bevel/type-variant")) {
     QList<TypeVariant> tvl = TypeVariant::fromMimeData(e->mimeData());
-    QSqlQuery* categoryQuery = Queries::getCategoryOfTypeQuery();
+    QSqlQuery* categoryQuery = Queries::getQuery(Queries::CategoryOfTypeQuery);
     categoryQuery->bindValue(":id", tvl[0].toTypeId());
     categoryQuery->exec();
     categoryQuery->next();
@@ -122,7 +122,7 @@ void SkillTrainingQueueListWidget::deleteTrainingUnit(int index) {
 }
 
 void SkillTrainingQueueListWidget::addTypes(int index, QList<TypeVariant> types) {
-  QSqlQuery* categoryQuery = Queries::getCategoryOfTypeQuery();
+  QSqlQuery* categoryQuery = Queries::getQuery(Queries::CategoryOfTypeQuery);
   for (QListIterator<TypeVariant> i(types); i.hasNext();) { // for each type in the list
     int skillId = i.next().toTypeId();
     categoryQuery->bindValue(":id", skillId);

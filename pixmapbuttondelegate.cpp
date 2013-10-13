@@ -35,6 +35,7 @@ QSize PixmapButtonDelegate::sizeHint(const QStyleOptionViewItem& option, const Q
 
 bool PixmapButtonDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option, const QModelIndex& index)
 {
+  Q_UNUSED(model)
   if(!index.model()->hasChildren(index) &&
      event->type() == QEvent::MouseButtonRelease) {
     QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);

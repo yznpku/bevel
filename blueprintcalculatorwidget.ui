@@ -247,6 +247,9 @@
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
              <widget class="QTreeWidget" name="basicMaterialsTable">
+              <property name="mouseTracking">
+               <bool>true</bool>
+              </property>
               <property name="rootIsDecorated">
                <bool>false</bool>
               </property>
@@ -295,6 +298,9 @@
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
              <widget class="QTreeWidget" name="extraMaterialsTable">
+              <property name="mouseTracking">
+               <bool>true</bool>
+              </property>
               <property name="rootIsDecorated">
                <bool>false</bool>
               </property>

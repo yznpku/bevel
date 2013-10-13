@@ -24,6 +24,7 @@ TypeTree::TypeTree(QWidget* parent)
   : QTreeWidget(parent) {
   locale = QLocale(QLocale::English);
   setDragEnabled(true);
+  setMouseTracking(true);
 }
 
 void TypeTree::setColumns(const QList<TypeTree::Column>& columns)

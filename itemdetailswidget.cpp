@@ -15,6 +15,7 @@
 #include "global.hpp"
 #include "attributetree.h"
 #include "skillrequirementtree.hpp"
+#include "variationtree.h"
 
 ItemDetailsWidget::ItemDetailsWidget(int typeId, QWidget* parent)
   : QWidget(parent) {
@@ -46,6 +47,7 @@ void ItemDetailsWidget::init() {
   initDescriptionTab();
   initAttributeTree();
   initSkillRequirementTree();
+  initVariationTree();
   fillTabs();
 }
 
@@ -67,8 +69,19 @@ void ItemDetailsWidget::initSkillRequirementTree() {
   srt = new SkillRequirementTree(typeId);
 }
 
+void ItemDetailsWidget::initVariationTree()
+{
+  if (VariationTree::hasVariations(typeId)) {
+    vt = new VariationTree();
+    vt->init(typeId);
+  } else
+    vt = 0;
+}
+
 void ItemDetailsWidget::fillTabs() {
   ui->tabs->addTab(descriptionTab, tr("Description"));
   ui->tabs->addTab(at, tr("Attributes"));
   ui->tabs->addTab(srt, tr("Skill Requirement"));
+  if (vt)
+    ui->tabs->addTab(vt, tr("Variations"));
 }

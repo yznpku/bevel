@@ -67,6 +67,19 @@ void Queries::initQueries()
                 "SELECT displayName "
                 "FROM eveUnits "
                 "WHERE unitId = :id");
+  registerQuery(MetaGroupOfTypeQuery, "static",
+                "SELECT metaGroupId "
+                "FROM invMetaTypes "
+                "WHERE typeId = :id");
+  registerQuery(MetaGroupNameQuery, "static",
+                "SELECT metaGroupName "
+                "FROM invMetaGroups "
+                "WHERE metaGroupId = :id");
+  registerQuery(MetaLevelQuery, "static",
+                "SELECT valueInt, valueFloat "
+                "FROM dgmTypeAttributes "
+                "WHERE typeId = :id "
+                "  AND attributeId = 633");
 
   registerQuery(LastInsertRowidQuery, "user",
                 "SELECT last_insert_rowid()");

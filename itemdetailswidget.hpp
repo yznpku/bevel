@@ -9,6 +9,7 @@ class QTabWidget;
 class QTextEdit;
 class AttributeTree;
 class SkillRequirementTree;
+class VariationTree;
 class QTreeWidgetItem;
 
 namespace Ui {
@@ -27,6 +28,7 @@ private:
   void initDescriptionTab();
   void initAttributeTree();
   void initSkillRequirementTree();
+  void initVariationTree();
   void fillTabs();
 private:
   Ui::ItemDetailsWidget *ui;
@@ -38,6 +40,7 @@ private:
   QTextEdit* descriptionTab;
   AttributeTree* at;
   SkillRequirementTree* srt;
+  VariationTree* vt;
 };
 
 #endif // ITEMDETAILSWIDGET_HPP

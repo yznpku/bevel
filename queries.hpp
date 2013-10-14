@@ -21,6 +21,9 @@ namespace Queries {
     BasicMaterialsQuery,
     ExtraMaterialsQuery,
     UnitDisplayNameQuery,
+    MetaGroupOfTypeQuery,
+    MetaGroupNameQuery,
+    MetaLevelQuery,
 
     LastInsertRowidQuery,
 

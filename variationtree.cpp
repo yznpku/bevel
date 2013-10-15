@@ -2,17 +2,26 @@
 
 #include <QHeaderView>
 #include <QDebug>
+#include "global.hpp"
 #include "queries.hpp"
+#include "pixmapbuttondelegate.hpp"
+#include "itemdetailswidget.hpp"
 
 VariationTree::VariationTree(QWidget *parent) :
   QTreeWidget(parent)
 {
+  setMouseTracking(true);
   setColumnCount(3);
   setHeaderItem(new QTreeWidgetItem({tr("Name"), tr("Meta Level"), ""}));
   header()->setStretchLastSection(false);
   header()->setSectionResizeMode(0, QHeaderView::Stretch);
   header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
   header()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+
+  PixmapButtonDelegate* delegate = new PixmapButtonDelegate(getIconPixmap("38_16_208"));
+  setItemDelegateForColumn(2, delegate);
+  connect(delegate, SIGNAL(clicked(QModelIndex)),
+          this, SLOT(infoButtonClicked(QModelIndex)));
 }
 
 void VariationTree::init(int typeId)
@@ -39,7 +48,7 @@ void VariationTree::init(int typeId)
       metaGroupNameQuery->exec();
       metaGroupNameQuery->next();
       QString groupName = metaGroupNameQuery->value(0).toString();
-      QTreeWidgetItem* item = new QTreeWidgetItem(this, {groupName, "", ""});
+      QTreeWidgetItem* item = new QTreeWidgetItem(this, {groupName, ""});
       itemOfMetaGroup[metaGroupId] = item;
     }
 
@@ -120,4 +129,14 @@ QList<int> VariationTree::getVariations(int parentTypeId)
   while (childrenQuery.next())
     result << childrenQuery.value(0).toInt();
   return result;
+}
+
+void VariationTree::infoButtonClicked(const QModelIndex& index)
+{
+  QTreeWidgetItem* item = itemFromIndex(index);
+  if (!typeOfItem.contains(item))
+    return;
+  int typeId = typeOfItem[item];
+  ItemDetailsWidget* idw = new ItemDetailsWidget(typeId, mainWindow);
+  idw->show();
 }

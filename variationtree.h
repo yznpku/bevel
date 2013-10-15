@@ -5,6 +5,7 @@
 
 #include <QMap>
 #include <QList>
+#include <QModelIndex>
 
 class VariationTree : public QTreeWidget
 {
@@ -17,6 +18,8 @@ public:
   static bool isParent(int typeId);
   static int getParentTypeId(int typeId);
   static QList<int> getVariations(int parentTypeId);
+private slots:
+  void infoButtonClicked(const QModelIndex& index);
 private:
   int parentTypeId;
   QMap<QTreeWidgetItem*, int> typeOfItem;

@@ -59,6 +59,8 @@ void MarketOrdersWidget::typeDropped(int typeId)
   reply = Network::getOrders(typeId, Settings::getMarketOrdersTimeLimitSetting());
   refreshOrStopButton->show();
   setButtonState(StopState);
+  ui->sellOrdersTable->setBusy(true);
+  ui->buyOrdersTable->setBusy(true);
 
   connect(reply, SIGNAL(finished()),
           this, SLOT(replyFinished()));
@@ -72,6 +74,8 @@ void MarketOrdersWidget::replyFinished()
   clearTable(ui->buyOrdersTable);
   parseReply(xmlString);
   setButtonState(RefreshState);
+  ui->sellOrdersTable->setBusy(false);
+  ui->buyOrdersTable->setBusy(false);
 }
 
 void MarketOrdersWidget::parseReply(const QString& xmlString)
@@ -158,4 +162,6 @@ void MarketOrdersWidget::stop()
 {
   reply->deleteLater();
   setButtonState(RefreshState);
+  ui->sellOrdersTable->setBusy(false);
+  ui->buyOrdersTable->setBusy(false);
 }

@@ -9,8 +9,6 @@ BusyBar::BusyBar(QWidget *parent) :
 
 void BusyBar::updatePosition(const QRect& parentGeometry)
 {
-  if (isHidden())
-    return;
   QRect newGeometry = rect();
   newGeometry.moveCenter(QPoint(parentGeometry.width() / 2, parentGeometry.height() / 2));
   setGeometry(newGeometry);

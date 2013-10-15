@@ -16,8 +16,6 @@ class QPushButton;
 class MarketOrdersWidget : public QWidget
 {
   Q_OBJECT
-  enum ButtonState {RefreshState, StopState};
-
 public:
   explicit MarketOrdersWidget(QWidget *parent = 0);
   ~MarketOrdersWidget();
@@ -30,7 +28,7 @@ private:
   void addTableRow(QTableWidget* table, int stationId, double price,
                    int quantity, QString reportedTime);
   void clearTable(QTableWidget* table);
-  void setButtonState(ButtonState state);
+  void setBusy(bool busy);
 private slots:
   void refreshOrStop();
   void refresh();
@@ -38,10 +36,8 @@ private slots:
 private:
   int typeId;
   QNetworkReply* reply;
-//  QMovie* loaderMovie;
-//  QLabel* statusLabel;
   QPushButton* refreshOrStopButton;
-  ButtonState buttonState;
+  bool busy;
 private:
   Ui::MarketOrdersWidget *ui;
 };

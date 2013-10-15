@@ -29,7 +29,7 @@ MarketOrdersWidget::MarketOrdersWidget(QWidget *parent) :
   }
 
   refreshOrStopButton = new QPushButton();
-  setButtonState(RefreshState);
+  setBusy(false);
   ui->tabs->setCornerWidget(refreshOrStopButton);
   refreshOrStopButton->hide();
 
@@ -58,9 +58,7 @@ void MarketOrdersWidget::typeDropped(int typeId)
 
   reply = Network::getOrders(typeId, Settings::getMarketOrdersTimeLimitSetting());
   refreshOrStopButton->show();
-  setButtonState(StopState);
-  ui->sellOrdersTable->setBusy(true);
-  ui->buyOrdersTable->setBusy(true);
+  setBusy(true);
 
   connect(reply, SIGNAL(finished()),
           this, SLOT(replyFinished()));
@@ -73,9 +71,7 @@ void MarketOrdersWidget::replyFinished()
   clearTable(ui->sellOrdersTable);
   clearTable(ui->buyOrdersTable);
   parseReply(xmlString);
-  setButtonState(RefreshState);
-  ui->sellOrdersTable->setBusy(false);
-  ui->buyOrdersTable->setBusy(false);
+  setBusy(false);
 }
 
 void MarketOrdersWidget::parseReply(const QString& xmlString)
@@ -128,29 +124,23 @@ void MarketOrdersWidget::clearTable(QTableWidget* table)
     table->removeRow(0);
 }
 
-void MarketOrdersWidget::setButtonState(MarketOrdersWidget::ButtonState state)
+void MarketOrdersWidget::setBusy(bool busy)
 {
-  buttonState = state;
-  switch (state) {
-  case RefreshState:
-    refreshOrStopButton->setIcon(QIcon(getIconPixmap("73_16_11")));
-    break;
-  case StopState:
+  this->busy = busy;
+  if (busy)
     refreshOrStopButton->setIcon(QIcon(getIconPixmap("73_16_45")));
-    break;
-  }
+  else
+    refreshOrStopButton->setIcon(QIcon(getIconPixmap("73_16_11")));
+  ui->sellOrdersTable->setBusy(busy);
+  ui->buyOrdersTable->setBusy(busy);
 }
 
 void MarketOrdersWidget::refreshOrStop()
 {
-  switch (buttonState) {
-  case RefreshState:
-    refresh();
-    break;
-  case StopState:
+  if (busy)
     stop();
-    break;
-  }
+  else
+    refresh();
 }
 
 void MarketOrdersWidget::refresh()
@@ -161,7 +151,5 @@ void MarketOrdersWidget::refresh()
 void MarketOrdersWidget::stop()
 {
   reply->deleteLater();
-  setButtonState(RefreshState);
-  ui->sellOrdersTable->setBusy(false);
-  ui->buyOrdersTable->setBusy(false);
+  setBusy(false);
 }

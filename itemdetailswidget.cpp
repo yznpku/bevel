@@ -38,7 +38,7 @@ ItemDetailsWidget::~ItemDetailsWidget() {
 void ItemDetailsWidget::init() {
   ui = new Ui::ItemDetailsWidget;
   ui->setupUi(this);
-  setWindowFlags(Qt::Dialog);
+  setWindowFlags(Qt::Tool);
   setAttribute(Qt::WA_DeleteOnClose);
   setWindowTitle(tr("Item Details - %1").arg(as.name));
   ui->typePixmapLabel->setPixmap(*getTypePixmap64(typeId));

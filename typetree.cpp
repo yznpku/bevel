@@ -9,7 +9,6 @@
 #include <QLabel>
 #include <QListIterator>
 #include <QMenu>
-#include <QProgressBar>
 #include <QPushButton>
 #include <QtSql>
 #include <QTreeWidgetItem>
@@ -19,6 +18,7 @@
 #include "queries.hpp"
 #include "infobutton.hpp"
 #include "pixmapbuttondelegate.hpp"
+#include "busybar.h"
 #include "itemdetailswidget.hpp"
 #include "typevariant.hpp"
 #include "market.hpp"
@@ -29,10 +29,8 @@ TypeTree::TypeTree(QWidget* parent)
   setDragEnabled(true);
   setMouseTracking(true);
 
-  busyBar = new QProgressBar(this);
-  busyBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  busyBar->setRange(0, 0);
-  busyBar->resize(100, 19);
+  busyBar = new BusyBar(this);
+
   busyBar->show();
 }
 
@@ -212,9 +210,7 @@ void TypeTree::contextMenuEvent(QContextMenuEvent* e) {
 
 void TypeTree::resizeEvent(QResizeEvent* e)
 {
-  QRect newGeometry = busyBar->rect();
-  newGeometry.moveCenter(QPoint(geometry().width() / 2, geometry().height() / 2));
-  busyBar->setGeometry(newGeometry);
+  busyBar->updatePosition(geometry());
   QTreeWidget::resizeEvent(e);
 }
 

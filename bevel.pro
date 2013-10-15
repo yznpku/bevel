@@ -43,7 +43,8 @@ HEADERS += global.hpp \
     requestpriceevent.hpp \
     skillrequirementtree.hpp \
     attributetree.h \
-    variationtree.h
+    variationtree.h \
+    busybar.h
 SOURCES += global.cpp \
            item_index_dock.cpp \
            main.cpp \
@@ -78,7 +79,8 @@ SOURCES += global.cpp \
     requestpriceevent.cpp \
     skillrequirementtree.cpp \
     attributetree.cpp \
-    variationtree.cpp
+    variationtree.cpp \
+    busybar.cpp
 
 FORMS += \
     itemdetailswidget.ui \

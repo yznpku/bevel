@@ -9,7 +9,7 @@
 class QContextMenuEvent;
 class QResizeEvent;
 class QTreeWidgetItem;
-class QProgressBar;
+class BusyBar;
 
 class TypeTree : public QTreeWidget {
   Q_OBJECT
@@ -39,7 +39,7 @@ private:
   QList<Column> columns;
   QMap<int, QTreeWidgetItem*> itemOfType;
   QMap<QTreeWidgetItem*, int> typeOfItem;
-  QProgressBar* busyBar;
+  BusyBar* busyBar;
   QFutureWatcher<QList<QTreeWidgetItem*> >* rootItemsFutureWatcher;
 };
 

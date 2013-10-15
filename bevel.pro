@@ -6,7 +6,7 @@ TEMPLATE = app
 TARGET = bevel
 INCLUDEPATH += .
 
-QT += sql widgets network xmlpatterns
+QT += sql widgets network xmlpatterns concurrent
 CONFIG += c++11
 
 # Input

@@ -1,7 +1,6 @@
 #include "variationtree.h"
 
 #include <QHeaderView>
-#include <QDebug>
 #include "global.hpp"
 #include "queries.hpp"
 #include "pixmapbuttondelegate.hpp"

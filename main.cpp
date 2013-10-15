@@ -47,24 +47,20 @@ int main(int argc, char** argv) {
 
   mainWindow = new MainWindow();
   mainWindow->setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
-  mainWindow->show();
 
-  CharacterIndexDock* ci = new CharacterIndexDock();
+  CharacterIndexDock* ci = new CharacterIndexDock(mainWindow);
   mainWindow->addDockWidget(Qt::LeftDockWidgetArea, ci, Qt::Vertical);
-  ci->show();
-  ItemIndexDock* ii = new ItemIndexDock();
-  ii->show();
-  MarketDock* marketDock = new MarketDock();
+  ItemIndexDock* ii = new ItemIndexDock(mainWindow);
+  mainWindow->addDockWidget(Qt::LeftDockWidgetArea, ii, Qt::Vertical);
+  MarketDock* marketDock = new MarketDock(mainWindow);
   mainWindow->addDockWidget(Qt::TopDockWidgetArea, marketDock, Qt::Vertical);
-  marketDock->show();
-  mainWindow->splitDockWidget(ci, ii, Qt::Vertical);
 
-  QDockWidget* blueprintCalculatorDock = new QDockWidget(QObject::tr("Blueprint Calculator"));
-  BlueprintCalculatorWidget* bcw = new BlueprintCalculatorWidget(mainWindow);
+  QDockWidget* blueprintCalculatorDock = new QDockWidget(QObject::tr("Blueprint Calculator"), mainWindow);
+  BlueprintCalculatorWidget* bcw = new BlueprintCalculatorWidget();
   blueprintCalculatorDock->setWidget(bcw);
   mainWindow->addDockWidget(Qt::TopDockWidgetArea, blueprintCalculatorDock, Qt::Vertical);
   mainWindow->tabifyDockWidget(marketDock, blueprintCalculatorDock);
-  blueprintCalculatorDock->show();
 
+  mainWindow->show();
   return app.exec();
 }

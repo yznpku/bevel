@@ -4,9 +4,12 @@
 #include <QTreeWidget>
 
 #include <QModelIndex>
+#include <QFutureWatcher>
 
 class QContextMenuEvent;
+class QResizeEvent;
 class QTreeWidgetItem;
+class QProgressBar;
 
 class TypeTree : public QTreeWidget {
   Q_OBJECT
@@ -19,6 +22,7 @@ public:
   void initWithMarketGroups();
 protected:
   virtual void contextMenuEvent(QContextMenuEvent* e);
+  virtual void resizeEvent(QResizeEvent* e);
   virtual QStringList mimeTypes() const;
   virtual QMimeData* mimeData(const QList<QTreeWidgetItem*> items) const;
   virtual void startDrag(Qt::DropActions supportedActions);
@@ -27,6 +31,7 @@ private slots:
   void infoButtonClicked(const QModelIndex& index);
   void updatePriceButtonClicked(const QModelIndex& index);
   void priceUpdated(int typeId);
+  void resultReady();
 private:
   QStringList getStringListForType(int typeId);
 private:
@@ -34,6 +39,8 @@ private:
   QList<Column> columns;
   QMap<int, QTreeWidgetItem*> itemOfType;
   QMap<QTreeWidgetItem*, int> typeOfItem;
+  QProgressBar* busyBar;
+  QFutureWatcher<QList<QTreeWidgetItem*> >* rootItemsFutureWatcher;
 };
 
 #endif

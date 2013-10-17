@@ -239,7 +239,7 @@ void BlueprintCalculatorWidget::updateTotalMaterialsCost()
 
 void BlueprintCalculatorWidget::updateProductSellPrice()
 {
-  double sellPrice = market->getSellPrice(productId);
+  double sellPrice = market->getSellPrice(productId) * portionSize;
   QString str = qIsNaN(sellPrice) ? tr("N/A") : locale.toString(sellPrice, 'f', 2);
   str += " ISK";
   ui->sellPriceLabel->setText(str);
@@ -247,7 +247,7 @@ void BlueprintCalculatorWidget::updateProductSellPrice()
 
 void BlueprintCalculatorWidget::updateGrossProfit()
 {
-  double grossProfit = market->getSellPrice(productId) - getBasicMaterialsCost() - getExtraMaterialsCost();
+  double grossProfit = market->getSellPrice(productId) * portionSize - getBasicMaterialsCost() - getExtraMaterialsCost();
   QString str = qIsNaN(grossProfit) ? tr("N/A") : locale.toString(grossProfit, 'f', 2);
   str += " ISK";
   ui->profitLabel->setText(str);

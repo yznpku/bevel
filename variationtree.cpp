@@ -57,13 +57,15 @@ void VariationTree::init(int typeId)
     typeNameQuery->exec();
     typeNameQuery->next();
     QString typeName = typeNameQuery->value(0).toString();
+    int metaLevel = 0;
     QSqlQuery* metaLevelQuery = Queries::getQuery(Queries::MetaLevelQuery);
     metaLevelQuery->bindValue(":id", typeId);
     metaLevelQuery->exec();
-    metaLevelQuery->next();
-    int metaLevel = metaLevelQuery->value(0).toInt();
-    if (!metaLevel)
-      metaLevel = int(metaLevelQuery->value(1).toDouble()); // meta level may be stored in valueFloat column, don't know why.
+    if (metaLevelQuery->next()) {                             // some type doesn't even have meta level attribute
+      metaLevel = metaLevelQuery->value(0).toInt();
+      if (!metaLevel)
+        metaLevel = int(metaLevelQuery->value(1).toDouble()); // meta level may be stored in valueFloat column, don't know why.
+    }
     QTreeWidgetItem* item = new QTreeWidgetItem(groupItem, {typeName, QString::number(metaLevel), ""});
     typeOfItem[item] = typeId;
   }

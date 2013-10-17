@@ -39,6 +39,7 @@ void TypePixmapLabel::dropEvent(QDropEvent* e)
     setText(QString());
     setPixmap(*getTypePixmap64(filteredTypeId));
     emit typeDropped(filteredTypeId);
+    e->acceptProposedAction();
   }
 }
 

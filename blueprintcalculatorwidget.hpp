@@ -5,6 +5,7 @@
 
 #include <QMap>
 #include <QLocale>
+#include "blueprintcalculator.h"
 
 namespace Ui {
   class BlueprintCalculatorWidget;
@@ -24,24 +25,19 @@ private slots:
   void priceUpdated(int typeId);
   void basicMaterialInfoButtonClicked(const QModelIndex& index);
   void extraMaterialInfoButtonClicked(const QModelIndex& index);
+  void updateBasicMaterialsCost(double cost);
+  void updateExtraMaterialsCost(double cost);
+  void updateManufacturingMaterialsCost(double cost);
+  void updateProductSellPrice(double sellPrice);
+  void updateGrossProfit(double grossProfit);
 private:
-  QMap<int, int> getBasicMaterials() const;
-  QMap<int, int> getExtraMaterials() const;
-  double getBasicMaterialsCost() const;
-  double getExtraMaterialsCost() const;
-  void updateBasicMaterialsCost();
-  void updateExtraMaterialsCost();
-  void updateTotalMaterialsCost();
-  void updateProductSellPrice();
-  void updateGrossProfit();
   void requestPrices();
   void fillTables();
   void updateBasicMaterialItem(int typeId);
   void updateExtraMaterialItem(int typeId);
   QStringList getStringListForMaterial(int materialTypeId, int quantity, bool withWaste);
-  int getMeRequiredForOptimalMaterial(int materialQuantity) const;
-  int getQuantityWithWaste(int quantity, int me) const;
 private:
+  BlueprintCalculator* calculator;
   int blueprintId;
   int productId;
   int portionSize;

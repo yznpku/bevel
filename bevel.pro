@@ -44,7 +44,8 @@ HEADERS += global.hpp \
     skillrequirementtree.hpp \
     attributetree.h \
     variationtree.h \
-    busybar.h
+    busybar.h \
+    blueprintcalculator.h
 SOURCES += global.cpp \
            item_index_dock.cpp \
            main.cpp \
@@ -80,7 +81,8 @@ SOURCES += global.cpp \
     skillrequirementtree.cpp \
     attributetree.cpp \
     variationtree.cpp \
-    busybar.cpp
+    busybar.cpp \
+    blueprintcalculator.cpp
 
 FORMS += \
     itemdetailswidget.ui \

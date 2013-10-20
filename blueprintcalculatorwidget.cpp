@@ -55,6 +55,8 @@ BlueprintCalculatorWidget::BlueprintCalculatorWidget(QWidget *parent) :
       new PixmapButtonDelegate(getIconPixmap("38_16_208"));
   ui->extraMaterialsTable->setItemDelegateForColumn(3, extraMaterialsTableInfoButtonDelegate);
 
+  calculator = new BlueprintCalculator(this);
+
   connect(basicMaterialsTableInfoButtonDelegate, SIGNAL(clicked(QModelIndex)),
           this, SLOT(basicMaterialInfoButtonClicked(QModelIndex)));
   connect(extraMaterialsTableInfoButtonDelegate, SIGNAL(clicked(QModelIndex)),
@@ -63,6 +65,16 @@ BlueprintCalculatorWidget::BlueprintCalculatorWidget(QWidget *parent) :
           this, SLOT(blueprintDropped(int)));
   connect(market, SIGNAL(priceUpdated(int)),
           this, SLOT(priceUpdated(int)));
+  connect(calculator, SIGNAL(basicMaterialsCostChanged(double)),
+          this, SLOT(updateBasicMaterialsCost(double)));
+  connect(calculator, SIGNAL(extraMaterialsCostChanged(double)),
+          this, SLOT(updateExtraMaterialsCost(double)));
+  connect(calculator, SIGNAL(manufacturingMaterialsCostChanged(double)),
+          this, SLOT(updateManufacturingMaterialsCost(double)));
+  connect(calculator, SIGNAL(productSellPriceChanged(double)),
+          this, SLOT(updateProductSellPrice(double)));
+  connect(calculator, SIGNAL(grossProfitChanged(double)),
+          this, SLOT(updateGrossProfit(double)));
 }
 
 BlueprintCalculatorWidget::~BlueprintCalculatorWidget()
@@ -72,6 +84,9 @@ BlueprintCalculatorWidget::~BlueprintCalculatorWidget()
 
 void BlueprintCalculatorWidget::blueprintDropped(int blueprintId)
 {
+  this->blueprintId = blueprintId;
+  calculator->init(blueprintId);
+
   QSqlQuery* typeNameQuery = Queries::getQuery(Queries::TypeNameQuery);
   typeNameQuery->bindValue(":id", blueprintId);
   typeNameQuery->exec();
@@ -80,11 +95,8 @@ void BlueprintCalculatorWidget::blueprintDropped(int blueprintId)
   ui->blueprintNameLabel->setText(QString("<h2>%1</h2>").arg(blueprintName));
   ui->blueprintInfoButton->init(blueprintId);
 
-  QSqlQuery* productQuery = Queries::getQuery(Queries::ProductForBlueprintQuery);
-  productQuery->bindValue(":id", blueprintId);
-  productQuery->exec();
-  productQuery->next();
-  int productId = productQuery->value(0).toInt();
+  productId = BlueprintCalculator::queryProductId(blueprintId);
+
   typeNameQuery->bindValue(":id", productId);
   typeNameQuery->exec();
   typeNameQuery->next();
@@ -93,46 +105,21 @@ void BlueprintCalculatorWidget::blueprintDropped(int blueprintId)
   ui->productPixmap->setPixmap(*getTypePixmap64(productId));
   ui->productInfoButton->init(productId);
 
-  QSqlQuery* portionSizeQuery = Queries::getQuery(Queries::TypePortionSizeQuery);
-  portionSizeQuery->bindValue(":id", productId);
-  portionSizeQuery->exec();
-  portionSizeQuery->next();
-  int portionSize = portionSizeQuery->value(0).toInt();
+  portionSize = BlueprintCalculator::queryPortionSize(productId);
   ui->productPortionSizeLabel->setText(QString("*%1").arg(QString::number(portionSize)));
 
-  this->blueprintId = blueprintId;
-  this->productId = productId;
-  this->portionSize = portionSize;
-
-  basicMaterials = getBasicMaterials();
-  extraMaterials = getExtraMaterials();
+  basicMaterials = calculator->getBasicMaterials();
+  extraMaterials = calculator->getExtraMaterials();
   requestPrices();
   fillTables();
-  updateBasicMaterialsCost();
-  updateExtraMaterialsCost();
-  updateTotalMaterialsCost();
-  updateProductSellPrice();
-  updateGrossProfit();
 }
 
 void BlueprintCalculatorWidget::priceUpdated(int typeId)
 {
-  if (basicMaterials.contains(typeId)) {
+  if (basicMaterials.contains(typeId))
     updateBasicMaterialItem(typeId);
-    updateBasicMaterialsCost();
-  }
-  if (extraMaterials.contains(typeId)) {
+  if (extraMaterials.contains(typeId))
     updateExtraMaterialItem(typeId);
-    updateExtraMaterialsCost();
-  }
-  if (basicMaterials.contains(typeId) || extraMaterials.contains(typeId)) {
-    updateTotalMaterialsCost();
-    updateGrossProfit();
-  }
-  if (typeId == productId) {
-    updateProductSellPrice();
-    updateGrossProfit();
-  }
 }
 
 void BlueprintCalculatorWidget::basicMaterialInfoButtonClicked(const QModelIndex& index)
@@ -157,97 +144,36 @@ void BlueprintCalculatorWidget::extraMaterialInfoButtonClicked(const QModelIndex
   widget->show();
 }
 
-QMap<int, int> BlueprintCalculatorWidget::getBasicMaterials() const
+void BlueprintCalculatorWidget::updateBasicMaterialsCost(double cost)
 {
-  QMap<int, int> basicMaterials;
-  QSqlQuery* basicMaterialsQuery = Queries::getQuery(Queries::BasicMaterialsQuery);
-  basicMaterialsQuery->bindValue(":id", productId);
-  basicMaterialsQuery->exec();
-  while (basicMaterialsQuery->next()) {
-    int materialTypeId = basicMaterialsQuery->value(0).toInt();
-    int quantity = basicMaterialsQuery->value(1).toInt();
-    basicMaterials[materialTypeId] = quantity;
-  }
-  return basicMaterials;
-}
-
-QMap<int, int> BlueprintCalculatorWidget::getExtraMaterials() const
-{
-  QMap<int, int> extraMaterials;
-  QSqlQuery* extraMaterialsQuery = Queries::getQuery(Queries::ExtraMaterialsQuery);
-  extraMaterialsQuery->bindValue(":id", blueprintId);
-  extraMaterialsQuery->exec();
-  while (extraMaterialsQuery->next()) {
-    int materialTypeId = extraMaterialsQuery->value(0).toInt();
-    int quantity = extraMaterialsQuery->value(1).toInt();
-    QSqlQuery* categoryQuery = Queries::getQuery(Queries::CategoryOfTypeQuery);
-    categoryQuery->bindValue(":id", materialTypeId);
-    categoryQuery->exec();
-    categoryQuery->next();
-    if (categoryQuery->value(0).toInt() == 16) // Do not treat skills as materials
-      continue;
-    extraMaterials[materialTypeId] = quantity;
-  }
-  return extraMaterials;
-}
-
-double BlueprintCalculatorWidget::getBasicMaterialsCost() const
-{
-  double sum = 0.0;
-  for (QMapIterator<int, int> i(basicMaterials); i.hasNext();) {
-    i.next();
-    double price = market->getSellPrice(i.key());
-    sum += price * getQuantityWithWaste(i.value(), 0);
-  }
-  return sum;
-}
-
-double BlueprintCalculatorWidget::getExtraMaterialsCost() const
-{
-  double sum = 0.0;
-  for (QMapIterator<int, int> i(extraMaterials); i.hasNext();) {
-    i.next();
-    double price = market->getSellPrice(i.key());
-    sum += price * i.value();
-  }
-  return sum;
-}
-
-void BlueprintCalculatorWidget::updateBasicMaterialsCost()
-{
-  double cost = getBasicMaterialsCost();
   QString str = qIsNaN(cost) ? tr("N/A") : locale.toString(cost, 'f', 2);
   str += " ISK";
   ui->basicMaterialsCostLabel->setText(str);
 }
 
-void BlueprintCalculatorWidget::updateExtraMaterialsCost()
+void BlueprintCalculatorWidget::updateExtraMaterialsCost(double cost)
 {
-  double cost = getExtraMaterialsCost();
   QString str = qIsNaN(cost) ? tr("N/A") : locale.toString(cost, 'f', 2);
   str += " ISK";
   ui->extraMaterialsCostLabel->setText(str);
 }
 
-void BlueprintCalculatorWidget::updateTotalMaterialsCost()
+void BlueprintCalculatorWidget::updateManufacturingMaterialsCost(double cost)
 {
-  double cost = getBasicMaterialsCost() + getExtraMaterialsCost();
   QString str = qIsNaN(cost) ? tr("N/A") : locale.toString(cost, 'f', 2);
   str += " ISK";
   ui->materialsCostLabel->setText(str);
 }
 
-void BlueprintCalculatorWidget::updateProductSellPrice()
+void BlueprintCalculatorWidget::updateProductSellPrice(double sellPrice)
 {
-  double sellPrice = market->getSellPrice(productId) * portionSize;
   QString str = qIsNaN(sellPrice) ? tr("N/A") : locale.toString(sellPrice, 'f', 2);
   str += " ISK";
   ui->sellPriceLabel->setText(str);
 }
 
-void BlueprintCalculatorWidget::updateGrossProfit()
+void BlueprintCalculatorWidget::updateGrossProfit(double grossProfit)
 {
-  double grossProfit = market->getSellPrice(productId) * portionSize - getBasicMaterialsCost() - getExtraMaterialsCost();
   QString str = qIsNaN(grossProfit) ? tr("N/A") : locale.toString(grossProfit, 'f', 2);
   str += " ISK";
   ui->profitLabel->setText(str);
@@ -325,8 +251,8 @@ QStringList BlueprintCalculatorWidget::getStringListForMaterial(int materialType
   result << locale.toString(quantity);
   int actualQuantity = quantity;
   if (withWaste) {
-    result << locale.toString(getMeRequiredForOptimalMaterial(quantity));
-    actualQuantity = getQuantityWithWaste(quantity, 0);
+    result << locale.toString(BlueprintCalculator::getMeRequiredForOptimalMaterial(quantity));
+    actualQuantity = BlueprintCalculator::getQuantityWithWaste(quantity, 0);
     result << locale.toString(actualQuantity);
   }
   double sellPrice = market->getSellPrice(materialTypeId) * actualQuantity;
@@ -335,17 +261,3 @@ QStringList BlueprintCalculatorWidget::getStringListForMaterial(int materialType
   return result;
 }
 
-int BlueprintCalculatorWidget::getMeRequiredForOptimalMaterial(int materialQuantity) const
-{
-  return int(0.2 * materialQuantity);
-}
-
-int BlueprintCalculatorWidget::getQuantityWithWaste(int quantity, int me) const
-{
-  double wasteFactor;
-  if (me < 0)
-    wasteFactor = 0.1 * (1 - me);
-  else
-    wasteFactor = 0.1 / (1 + me);
-  return qRound(quantity * (1 + wasteFactor));
-}

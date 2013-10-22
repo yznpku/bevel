@@ -23,6 +23,7 @@ public:
 private slots:
   void blueprintDropped(int blueprintId);
   void priceUpdated(int typeId);
+  void manufacturingRunsChanged(int manufacturingRuns);
   void basicMaterialInfoButtonClicked(const QModelIndex& index);
   void extraMaterialInfoButtonClicked(const QModelIndex& index);
   void updateBasicMaterialsCost(double cost);
@@ -35,12 +36,14 @@ private:
   void fillTables();
   void updateBasicMaterialItem(int typeId);
   void updateExtraMaterialItem(int typeId);
+  void updateManufacturingMaterialItems();
   QStringList getStringListForMaterial(int materialTypeId, int quantity, bool withWaste);
 private:
   BlueprintCalculator* calculator;
   int blueprintId;
   int productId;
   int portionSize;
+  int manufacturingRuns;
   QMap<int, int> basicMaterials;
   QMap<int, int> extraMaterials;
   QMap<int, QTreeWidgetItem*> itemOfBasicMaterial;

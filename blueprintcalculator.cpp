@@ -7,6 +7,7 @@
 BlueprintCalculator::BlueprintCalculator(QObject* parent) :
   QObject(parent)
 {
+  manufacturingRuns = 1;
   connect(market, SIGNAL(priceUpdated(int)),
           this, SLOT(priceUpdated(int)));
 }
@@ -137,6 +138,16 @@ void BlueprintCalculator::priceUpdated(int typeId)
     updateGrossProfit();
 }
 
+void BlueprintCalculator::setManufacturingRuns(int runs)
+{
+  this->manufacturingRuns = runs;
+  updateBasicMaterialsCost();
+  updateExtraMaterialsCost();
+  updateManufacturingMaterialsCost();
+  updateProductSellPrice();
+  updateGrossProfit();
+}
+
 void BlueprintCalculator::updateBasicMaterialsCost()
 {
   double sum = 0.0;
@@ -145,7 +156,7 @@ void BlueprintCalculator::updateBasicMaterialsCost()
     double price = market->getSellPrice(i.key());
     sum += price * getQuantityWithWaste(i.value(), 0);
   }
-  basicMaterialsCost = sum;
+  basicMaterialsCost = sum * manufacturingRuns;
   emit basicMaterialsCostChanged(basicMaterialsCost);
 }
 
@@ -157,7 +168,7 @@ void BlueprintCalculator::updateExtraMaterialsCost()
     double price = market->getSellPrice(i.key());
     sum += price * i.value();
   }
-  extraMaterialsCost = sum;
+  extraMaterialsCost = sum * manufacturingRuns;
   emit extraMaterialsCostChanged(extraMaterialsCost);
 }
 
@@ -169,7 +180,7 @@ void BlueprintCalculator::updateManufacturingMaterialsCost()
 
 void BlueprintCalculator::updateProductSellPrice()
 {
-  productSellPrice = market->getSellPrice(productId) * portionSize;
+  productSellPrice = market->getSellPrice(productId) * portionSize * manufacturingRuns;
   emit productSellPriceChanged(productSellPrice);
 }
 

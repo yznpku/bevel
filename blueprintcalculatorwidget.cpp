@@ -21,6 +21,7 @@ BlueprintCalculatorWidget::BlueprintCalculatorWidget(QWidget *parent) :
   ui->productPixmap->setFixedSize(64, 64);
   ui->productHorizontalLayout->setAlignment(ui->productGridLayout, Qt::AlignTop);
   ui->manufacturingTab->layout()->setAlignment(ui->manufacturingVerticalLayout, Qt::AlignTop);
+  manufacturingRuns = 1;
   locale = QLocale(QLocale::English);
 
   ui->basicMaterialsTable->setColumnCount(6);
@@ -65,6 +66,10 @@ BlueprintCalculatorWidget::BlueprintCalculatorWidget(QWidget *parent) :
           this, SLOT(blueprintDropped(int)));
   connect(market, SIGNAL(priceUpdated(int)),
           this, SLOT(priceUpdated(int)));
+  connect(ui->manufacturingRunsSpinBox, SIGNAL(valueChanged(int)),
+          this, SLOT(manufacturingRunsChanged(int)));
+  connect(ui->manufacturingRunsSpinBox, SIGNAL(valueChanged(int)),
+          calculator, SLOT(setManufacturingRuns(int)));
   connect(calculator, SIGNAL(basicMaterialsCostChanged(double)),
           this, SLOT(updateBasicMaterialsCost(double)));
   connect(calculator, SIGNAL(extraMaterialsCostChanged(double)),
@@ -120,6 +125,12 @@ void BlueprintCalculatorWidget::priceUpdated(int typeId)
     updateBasicMaterialItem(typeId);
   if (extraMaterials.contains(typeId))
     updateExtraMaterialItem(typeId);
+}
+
+void BlueprintCalculatorWidget::manufacturingRunsChanged(int manufacturingRuns)
+{
+  this->manufacturingRuns = manufacturingRuns;
+  updateManufacturingMaterialItems();
 }
 
 void BlueprintCalculatorWidget::basicMaterialInfoButtonClicked(const QModelIndex& index)
@@ -239,6 +250,20 @@ void BlueprintCalculatorWidget::updateExtraMaterialItem(int typeId)
     item->setText(i, strList[i]);
 }
 
+void BlueprintCalculatorWidget::updateManufacturingMaterialItems()
+{
+  for (QMapIterator<int, int> i(basicMaterials); i.hasNext();) {
+    i.next();
+    int materialTypeId = i.key();
+    updateBasicMaterialItem(materialTypeId);
+  }
+  for (QMapIterator<int, int> i(extraMaterials); i.hasNext();) {
+    i.next();
+    int materialTypeId = i.key();
+    updateExtraMaterialItem(materialTypeId);
+  }
+}
+
 QStringList BlueprintCalculatorWidget::getStringListForMaterial(int materialTypeId, int quantity, bool withWaste)
 {
   QStringList result;
@@ -248,15 +273,15 @@ QStringList BlueprintCalculatorWidget::getStringListForMaterial(int materialType
   typeNameQuery->exec();
   typeNameQuery->next();
   result << typeNameQuery->value(0).toString();
-  result << locale.toString(quantity);
-  int actualQuantity = quantity;
+  result << locale.toString(quantity * manufacturingRuns);
+  int actualQuantity = quantity * manufacturingRuns;
   if (withWaste) {
     result << locale.toString(BlueprintCalculator::getMeRequiredForOptimalMaterial(quantity));
-    actualQuantity = BlueprintCalculator::getQuantityWithWaste(quantity, 0);
+    actualQuantity = BlueprintCalculator::getQuantityWithWaste(quantity, 0) * manufacturingRuns;
     result << locale.toString(actualQuantity);
   }
   double sellPrice = market->getSellPrice(materialTypeId) * actualQuantity;
-  result << (qIsNaN(sellPrice) ? tr("N/A") : locale.toString(sellPrice));
+  result << (qIsNaN(sellPrice) ? tr("N/A") : locale.toString(sellPrice, 'f', 2));
 
   return result;
 }

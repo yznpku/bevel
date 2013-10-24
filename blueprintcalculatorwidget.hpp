@@ -24,6 +24,7 @@ private slots:
   void blueprintDropped(int blueprintId);
   void priceUpdated(int typeId);
   void manufacturingRunsChanged(int manufacturingRuns);
+  void meChanged(int me);
   void basicMaterialInfoButtonClicked(const QModelIndex& index);
   void extraMaterialInfoButtonClicked(const QModelIndex& index);
   void updateBasicMaterialsCost(double cost);
@@ -44,6 +45,7 @@ private:
   int productId;
   int portionSize;
   int manufacturingRuns;
+  int me;
   QMap<int, int> basicMaterials;
   QMap<int, int> extraMaterials;
   QMap<int, QTreeWidgetItem*> itemOfBasicMaterial;

@@ -32,6 +32,7 @@ signals:
   void grossProfitChanged(double grossProfit);
 public slots:
   void priceUpdated(int typeId);
+  void meChanged(int me);
   void setManufacturingRuns(int runs);
 private:
   void updateBasicMaterialsCost();
@@ -44,6 +45,7 @@ private:
   int productId;
   int portionSize;
   int manufacturingRuns;
+  int me;
   QMap<int, int> basicMaterials;
   QMap<int, int> extraMaterials;
   double basicMaterialsCost;

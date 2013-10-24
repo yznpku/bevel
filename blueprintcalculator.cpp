@@ -8,6 +8,7 @@ BlueprintCalculator::BlueprintCalculator(QObject* parent) :
   QObject(parent)
 {
   manufacturingRuns = 1;
+  me = 0;
   connect(market, SIGNAL(priceUpdated(int)),
           this, SLOT(priceUpdated(int)));
 }
@@ -138,6 +139,14 @@ void BlueprintCalculator::priceUpdated(int typeId)
     updateGrossProfit();
 }
 
+void BlueprintCalculator::meChanged(int me)
+{
+  this->me = me;
+  updateBasicMaterialsCost();
+  updateManufacturingMaterialsCost();
+  updateGrossProfit();
+}
+
 void BlueprintCalculator::setManufacturingRuns(int runs)
 {
   this->manufacturingRuns = runs;
@@ -154,7 +163,7 @@ void BlueprintCalculator::updateBasicMaterialsCost()
   for (QMapIterator<int, int> i(basicMaterials); i.hasNext();) {
     i.next();
     double price = market->getSellPrice(i.key());
-    sum += price * getQuantityWithWaste(i.value(), 0);
+    sum += price * getQuantityWithWaste(i.value(), me);
   }
   basicMaterialsCost = sum * manufacturingRuns;
   emit basicMaterialsCostChanged(basicMaterialsCost);

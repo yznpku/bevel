@@ -22,6 +22,7 @@ BlueprintCalculatorWidget::BlueprintCalculatorWidget(QWidget *parent) :
   ui->productHorizontalLayout->setAlignment(ui->productGridLayout, Qt::AlignTop);
   ui->manufacturingTab->layout()->setAlignment(ui->manufacturingVerticalLayout, Qt::AlignTop);
   manufacturingRuns = 1;
+  me = 0;
   locale = QLocale(QLocale::English);
 
   ui->basicMaterialsTable->setColumnCount(6);
@@ -68,8 +69,12 @@ BlueprintCalculatorWidget::BlueprintCalculatorWidget(QWidget *parent) :
           this, SLOT(priceUpdated(int)));
   connect(ui->manufacturingRunsSpinBox, SIGNAL(valueChanged(int)),
           this, SLOT(manufacturingRunsChanged(int)));
+  connect(ui->meSpinBox, SIGNAL(valueChanged(int)),
+          this, SLOT(meChanged(int)));
   connect(ui->manufacturingRunsSpinBox, SIGNAL(valueChanged(int)),
           calculator, SLOT(setManufacturingRuns(int)));
+  connect(ui->meSpinBox, SIGNAL(valueChanged(int)),
+          calculator, SLOT(meChanged(int)));
   connect(calculator, SIGNAL(basicMaterialsCostChanged(double)),
           this, SLOT(updateBasicMaterialsCost(double)));
   connect(calculator, SIGNAL(extraMaterialsCostChanged(double)),
@@ -130,6 +135,12 @@ void BlueprintCalculatorWidget::priceUpdated(int typeId)
 void BlueprintCalculatorWidget::manufacturingRunsChanged(int manufacturingRuns)
 {
   this->manufacturingRuns = manufacturingRuns;
+  updateManufacturingMaterialItems();
+}
+
+void BlueprintCalculatorWidget::meChanged(int me)
+{
+  this->me = me;
   updateManufacturingMaterialItems();
 }
 
@@ -277,7 +288,7 @@ QStringList BlueprintCalculatorWidget::getStringListForMaterial(int materialType
   int actualQuantity = quantity * manufacturingRuns;
   if (withWaste) {
     result << locale.toString(BlueprintCalculator::getMeRequiredForOptimalMaterial(quantity));
-    actualQuantity = BlueprintCalculator::getQuantityWithWaste(quantity, 0) * manufacturingRuns;
+    actualQuantity = BlueprintCalculator::getQuantityWithWaste(quantity, me) * manufacturingRuns;
     result << locale.toString(actualQuantity);
   }
   double sellPrice = market->getSellPrice(materialTypeId) * actualQuantity;
